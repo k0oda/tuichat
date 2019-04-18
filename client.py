@@ -1,7 +1,7 @@
 import socket
 
 sock = socket.socket()
-sock.connect(("127.0.0.1", 3456))
+sock.connect(("localhost", 3456))
 input("Подключено! Нажмите для отправки")
 while True:
     your_data = input("Введите сообщение для отправки на сервер: ")
