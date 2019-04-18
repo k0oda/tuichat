@@ -28,6 +28,9 @@ class Server:
                 print(addr[0], "-", data)
                 conn.send(bytes("Server: Сообщение получено!", encoding="utf-8"))
             except ConnectionResetError:
+                print(addr[0], "отключен!")
+                break
+            except ConnectionAbortedError:
                 print(addr[0], "отключился!")
                 break
 
