@@ -1,18 +1,21 @@
 import socket
 from threading import Thread
 from datetime import datetime
+from urllib import request
 
 max_connections = 5
 port = 3456
 sock = socket.socket()
 sock.bind(("", port))
 sock.listen(max_connections)
+ip = request.urlopen('http://ident.me').read().decode("utf-8")
 
 print(f"""
 +======================================================+
 Server activated!
 Port: {port}
 Server limit of connections: {max_connections}
+External IP address: {ip}
 +======================================================+
 """)
 
