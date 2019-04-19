@@ -1,5 +1,6 @@
 import socket
 from threading import Thread
+from datetime import datetime
 
 max_connections = 5
 port = 3456
@@ -17,21 +18,25 @@ Server limit of connections: {max_connections}
 
 
 class Server:
+    def time(self):
+        current_time = datetime.now().strftime('%Y-%m-%d | %H:%M:%S |')
+        return current_time
+
     def accept(self):
         self.conn, self.addr = sock.accept()
-        print("Подключен новый пользователь:", self.addr[0])
+        print(self.time(Server), "Подключен новый пользователь:", self.addr[0])
 
     def get_data(self, conn, addr,):
         while True:
             try:
                 data = conn.recv(48634).decode('utf-8')
-                print(addr[0], "-", data)
+                print(self.time(Server), addr[0], "-", data)
                 conn.send(bytes("Server: Сообщение получено!", encoding="utf-8"))
             except ConnectionResetError:
-                print(addr[0], "отключен!")
+                print(self.time(Server), addr[0], "отключен!")
                 break
             except ConnectionAbortedError:
-                print(addr[0], "отключился!")
+                print(self.time(Server), addr[0], "отключился!")
                 break
 
 
