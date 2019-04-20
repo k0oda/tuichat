@@ -1,11 +1,11 @@
-import socket
-from threading import Thread
 from datetime import datetime
+from socket import socket
+from threading import Thread
 from urllib import request
 
 max_connections = 5
 port = 3456
-sock = socket.socket()
+sock = socket()
 sock.bind(("", port))
 sock.listen(max_connections)
 ip = request.urlopen('http://ident.me').read().decode("utf-8")
