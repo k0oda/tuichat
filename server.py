@@ -21,21 +21,25 @@ External IP address: {ip}
 
 
 class Server:
+    def __init__(self):
+        self.users = []
+
     def time(self):
         current_time = datetime.now().strftime('%Y-%m-%d | %H:%M:%S |')
         return current_time
 
     def accept(self):
         self.connection, self.address = sock.accept()
+        self.users.append(self.connection)
         print(self.time(), "Подключен новый пользователь:", self.address[0])
 
     def get_data(self, connection, address,):
         while True:
             try:
-                data = connection.recv(48634).decode('utf-8')
-                if data:
-                    print(self.time(), address[0], "-", data)
-                    connection.send(bytes("Server: Сообщение получено!", encoding="utf-8"))
+                self.data = connection.recv(48634).decode('utf-8')
+                if self.data:
+                    print(self.time(), address[0], "-", self.data)
+                    self.send_messages(address, self.data)
             except ConnectionResetError:
                 connection.close()
                 print(self.time(), address[0], "отключен!")
@@ -44,6 +48,10 @@ class Server:
                 connection.close()
                 print(self.time(), address[0], "отключился!")
                 break
+
+    def send_messages(self, address, data):
+        for user in self.users:
+            user.send(bytes(self.time() + " " + address[0] + " - " + data, encoding="utf-8"))
 
 
 server = Server()
