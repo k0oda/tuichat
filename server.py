@@ -31,7 +31,7 @@ class Server:
     def accept(self):
         self.connection, self.address = sock.accept()
         self.users.append(self.connection)
-        new_user_msg = f"{self.time()} Подключен новый пользователь: {self.address[0]}"
+        new_user_msg = f"{self.time()} New user connected: {self.address[0]}"
         print(new_user_msg)
         self.send_messages(new_user_msg + "\n")
 
@@ -45,13 +45,13 @@ class Server:
                     self.send_messages(self.data + "\n")
             except ConnectionResetError:
                 connection.close()
-                connection_reset_msg = f"{self.time()} {address[0]} отключен!"
+                connection_reset_msg = f"{self.time()} {address[0]} disconnected!"
                 print(connection_reset_msg)
                 self.send_messages(connection_reset_msg + "\n")
                 break
             except ConnectionAbortedError:
                 connection.close()
-                connection_aborted_msg = f"{self.time()} {address[0]} отключился!"
+                connection_aborted_msg = f"{self.time()} {address[0]} disconnected!"
                 print(connection_aborted_msg)
                 self.send_messages(connection_aborted_msg + "\n")
                 break

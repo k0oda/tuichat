@@ -1,15 +1,15 @@
 from socket import socket
 from threading import Thread
 
-server_ip = "localhost"
+host = "localhost"
 port = 3456
 sock = socket()
 sock.connect((server_ip, port))
 print(f"""
 +=======================+
-Соединение установлено!
-Сервер: {server_ip}
-Порт: {port}
+Connection established!
+Host: {host}
+Port: {port}
 +=======================+
 """)
 
@@ -20,7 +20,7 @@ class Client:
         print(data)
 
     def send_data(self):
-        message = input('Введите сообщение или введите "/r" чтобы получить новые сообщения > ')
+        message = input('Enter a message or enter "/r" to receive new messages. > ')
         if message != "/r":
             sock.send(bytes(message, encoding="utf-8"))
         else:
