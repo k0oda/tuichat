@@ -33,7 +33,7 @@ class Server:
         self.users.append(self.connection)
         new_user_msg = f"{self.time()} Подключен новый пользователь: {self.address[0]}"
         print(new_user_msg)
-        self.send_messages(new_user_msg)
+        self.send_messages(new_user_msg + "\n")
 
     def get_data(self, connection, address,):
         while True:
@@ -42,23 +42,26 @@ class Server:
                 if self.data:
                     self.data = f"{self.time()} {address[0]} - {self.data}"
                     print(self.data)
-                    self.send_messages(self.data)
+                    self.send_messages(self.data + "\n")
             except ConnectionResetError:
                 connection.close()
                 connection_reset_msg = f"{self.time()} {address[0]} отключен!"
                 print(connection_reset_msg)
-                self.send_messages(connection_reset_msg)
+                self.send_messages(connection_reset_msg + "\n")
                 break
             except ConnectionAbortedError:
                 connection.close()
                 connection_aborted_msg = f"{self.time()} {address[0]} отключился!"
                 print(connection_aborted_msg)
-                self.send_messages(connection_aborted_msg)
+                self.send_messages(connection_aborted_msg + "\n")
                 break
 
     def send_messages(self, message,):
         for user in self.users:
-            user.send(bytes(message, encoding="utf-8"))
+            try:
+                user.send(bytes(message, encoding="utf-8"))
+            except OSError:
+                continue
 
 
 server = Server()

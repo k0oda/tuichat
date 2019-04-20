@@ -16,20 +16,18 @@ print(f"""
 
 class Client:
     def receive_data(self):
-        try:
-            data = sock.recv(48634).decode("utf-8")
-            print(data)
-        except:
-            pass
+        data = sock.recv(48634).decode("utf-8")
+        print(data)
 
     def send_data(self):
-        message = input("Ввод > ")
-        sock.send(bytes(message, encoding="utf-8"))
+        message = input('Введите сообщение или введите "/r" чтобы получить новые сообщения > ')
+        if message != "/r":
+            sock.send(bytes(message, encoding="utf-8"))
+        else:
+            self.receive_data()
 
 
 client = Client()
 while True:
-    data = Thread(target=client.receive_data())
-    data.start()
     sending = Thread(target=client.send_data())
     sending.start()
