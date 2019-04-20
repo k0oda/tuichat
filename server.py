@@ -31,27 +31,34 @@ class Server:
     def accept(self):
         self.connection, self.address = sock.accept()
         self.users.append(self.connection)
-        print(self.time(), "Подключен новый пользователь:", self.address[0])
+        new_user_msg = f"{self.time()} Подключен новый пользователь: {self.address[0]}"
+        print(new_user_msg)
+        self.send_messages(new_user_msg)
 
     def get_data(self, connection, address,):
         while True:
             try:
                 self.data = connection.recv(48634).decode('utf-8')
                 if self.data:
-                    print(self.time(), address[0], "-", self.data)
-                    self.send_messages(address, self.data)
+                    self.data = f"{self.time()} {address[0]} - {self.data}"
+                    print(self.data)
+                    self.send_messages(self.data)
             except ConnectionResetError:
                 connection.close()
-                print(self.time(), address[0], "отключен!")
+                connection_reset_msg = f"{self.time()} {address[0]} отключен!"
+                print(connection_reset_msg)
+                self.send_messages(connection_reset_msg)
                 break
             except ConnectionAbortedError:
                 connection.close()
-                print(self.time(), address[0], "отключился!")
+                connection_aborted_msg = f"{self.time()} {address[0]} отключился!"
+                print(connection_aborted_msg)
+                self.send_messages(connection_aborted_msg)
                 break
 
-    def send_messages(self, address, data):
+    def send_messages(self, message,):
         for user in self.users:
-            user.send(bytes(self.time() + " " + address[0] + " - " + data, encoding="utf-8"))
+            user.send(bytes(message, encoding="utf-8"))
 
 
 server = Server()

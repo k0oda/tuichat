@@ -1,11 +1,35 @@
-import socket
+from socket import socket
+from threading import Thread
 
-sock = socket.socket()
-sock.connect(("localhost", 3456))
-input("Подключено! Нажмите для отправки")
+server_ip = "localhost"
+port = 3456
+sock = socket()
+sock.connect((server_ip, port))
+print(f"""
++=======================+
+Соединение установлено!
+Сервер: {server_ip}
+Порт: {port}
++=======================+
+""")
+
+
+class Client:
+    def receive_data(self):
+        try:
+            data = sock.recv(48634).decode("utf-8")
+            print(data)
+        except:
+            pass
+
+    def send_data(self):
+        message = input("Ввод > ")
+        sock.send(bytes(message, encoding="utf-8"))
+
+
+client = Client()
 while True:
-    your_data = input("Введите сообщение для отправки на сервер: ")
-    bin_data = bytes(your_data, encoding="utf-8")
-    sock.send(bin_data)
-    data = sock.recv(16384)
-    print("Сообщение от сервера:", data.decode("utf-8"))
+    data = Thread(target=client.receive_data())
+    data.start()
+    sending = Thread(target=client.send_data())
+    sending.start()
