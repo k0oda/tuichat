@@ -26,23 +26,23 @@ class Server:
         return current_time
 
     def accept(self):
-        self.conn, self.addr = sock.accept()
-        print(self.time(), "Подключен новый пользователь:", self.addr[0])
+        self.connection, self.address = sock.accept()
+        print(self.time(), "Подключен новый пользователь:", self.address[0])
 
-    def get_data(self, conn, addr,):
+    def get_data(self, connection, address,):
         while True:
             try:
-                data = conn.recv(48634).decode('utf-8')
+                data = connection.recv(48634).decode('utf-8')
                 if data:
-                    print(self.time(), addr[0], "-", data)
-                    conn.send(bytes("Server: Сообщение получено!", encoding="utf-8"))
+                    print(self.time(), address[0], "-", data)
+                    connection.send(bytes("Server: Сообщение получено!", encoding="utf-8"))
             except ConnectionResetError:
-                conn.close()
-                print(self.time(), addr[0], "отключен!")
+                connection.close()
+                print(self.time(), address[0], "отключен!")
                 break
             except ConnectionAbortedError:
-                conn.close()
-                print(self.time(), addr[0], "отключился!")
+                connection.close()
+                print(self.time(), address[0], "отключился!")
                 break
 
 
@@ -50,5 +50,5 @@ server = Server()
 while True:
     connection = Thread(target=server.accept())
     connection.start()
-    user = Thread(target=server.get_data, args=(server.conn, server.addr,))
+    user = Thread(target=server.get_data, args=(server.connection, server.address,))
     user.start()
