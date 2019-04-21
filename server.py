@@ -8,21 +8,20 @@ port = 3456
 sock = socket()
 sock.bind(("", port))
 sock.listen(max_connections)
-ip = request.urlopen('http://ident.me').read().decode("utf-8")
+external_ip = request.urlopen('http://ident.me').read().decode("utf-8")
 
 print(f"""
 +======================================================+
 Server activated!
 Port: {port}
 Server limit of connections: {max_connections}
-External IP address: {ip}
+External IP address: {external_ip}
 +======================================================+
 """)
 
 
 class Server:
-    def __init__(self):
-        self.users = []
+    users = []
 
     def time(self):
         current_time = datetime.now().strftime('%Y-%m-%d | %H:%M:%S |')
@@ -61,12 +60,12 @@ class Server:
             try:
                 user.send(bytes(message, encoding="utf-8"))
             except OSError:
-                continue
+                user.close()
 
 
 server = Server()
-while True:
+while True:  # Infinity accepting new connections and receiving data
     connection = Thread(target=server.accept())
     connection.start()
-    user = Thread(target=server.get_data, args=(server.connection, server.address,))
-    user.start()
+    get_msg = Thread(target=server.get_data, args=(server.connection, server.address,))
+    get_msg.start()
