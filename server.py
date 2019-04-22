@@ -10,6 +10,14 @@ sock.bind(("", port))
 sock.listen(max_connections)
 external_ip = request.urlopen('http://ident.me').read().decode("utf-8")
 
+# License
+print("""
+PYChat  Copyright (C) 2019  Greenfield
+    This program comes with ABSOLUTELY NO WARRANTY.
+    This is free software, and you are welcome to redistribute it
+    under certain conditions.
+"""
+
 print(f"""
 +======================================================+
 Server activated!
