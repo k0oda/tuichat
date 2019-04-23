@@ -32,7 +32,7 @@ Just run the `server.py` file
 
 ## Built With
 
-* [Python 3](python.org) - Programming language
+* [Python 3](https://python.org) - Programming language
 
 ## Versioning
 
