@@ -19,8 +19,9 @@ Git (if you clone this repository using Git)
 
 ```
 1. Setup Git and type in git bash:
+
+git clone https://github.com/Kukree/PYChat
 ```
-![git clone https://github.com/Kukree/PYChat](https://i.imgur.com/pSvLlvj.png)
 ```
 2. Install Python 3 if not installed
 ```
