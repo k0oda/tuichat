@@ -20,7 +20,7 @@ Git (if you clone this repository using Git)
 ```
 1. Setup Git and type in git bash:
 ```
-![git clone https://github.com/Kukree/PYChat](https://carbon.now.sh/embed/?bg=rgba(255%252C255%252C255%252C1)&t=material&wt=none&l=application%252Fx-sh&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=true&pv=56px&ph=56px&ln=false&fm=Hack&fs=14px&lh=133%2525&si=false&es=4x&wm=false&code=git%252520clone%252520https%25253A%25252F%25252Fgithub.com%25252FKukree%25252FPYChat)
+![git clone https://github.com/Kukree/PYChat](https://i.imgur.com/pSvLlvj.png)
 ```
 2. Install Python 3 if not installed
 ```
@@ -32,10 +32,6 @@ Just start the `server.py` file
 ## Built With
 
 * [Python 3](python.org) - Programming language
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
