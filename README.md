@@ -11,8 +11,8 @@ These instructions will get you a copy of the project up and running on your loc
 For install and using this software you need:
 
 ```
-Python 3
-Git (if you clone this repository using Git)
+* Python 3
+* Git (if you clone this repository using Git)
 ```
 
 ### Installing
@@ -28,7 +28,7 @@ git clone https://github.com/Kukree/PYChat
 
 ## Deployment
 
-Just start the `server.py` file
+Just run the `server.py` file
 
 ## Built With
 
@@ -36,7 +36,7 @@ Just start the `server.py` file
 
 ## Versioning
 
-For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+For the versions available, see the [tags on this repository](https://github.com/Kukree/PYChat/tags). 
 
 ## Authors
 
