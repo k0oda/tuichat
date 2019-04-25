@@ -1,4 +1,9 @@
 # PYChat
+[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Contributors](https://img.shields.io/github/contributors/Kukree/PYChat.svg)](https://github.com/Kukree/PYChat/contributors)
+![Repo-size](https://img.shields.io/github/repo-size/Kukree/PYChat.svg)
+[![Open-issues](https://img.shields.io/github/issues-raw/Kukree/PYChat.svg)](https://github.com/Kukree/PYChat/issues)
+[![Closed-issues](https://img.shields.io/github/issues-closed-raw/Kukree/PYChat.svg)](https://github.com/Kukree/PYChat/issues?q=is%3Aissue+is%3Aclosed)
 
 A simple messaging program
 
