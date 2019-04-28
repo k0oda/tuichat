@@ -9,7 +9,7 @@ A simple messaging program
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
@@ -20,20 +20,28 @@ For install and using this software you need:
 * Git (if you clone this repository using Git)
 ```
 
-### Installing
+### Installing (№1) for developers
 
-```
 1. Setup Git and type in git bash:
 
-git clone https://github.com/Kukree/PYChat
-```
-```
+`git clone https://github.com/Kukree/PYChat`
+
 2. Install Python 3 if not installed
-```
+
+### Installing (№2) for users
+
+1. Get to [releases](https://github.com/Kukree/PYChat/releases)
+
+2. Download all *.exe files (**client.py**, **server.py**) and **config.json**
+
+3. Configure config.json using your text editor **(edit only variables marked in red square in screenshot)**
+![config.json](https://i.imgur.com/vTQbqEQ.png)
+
+> **Note**: If you don't want to use **config.json** you can delete it and configure program at startup
 
 ## Deployment
 
-Just run the `server.py` file
+Just run the `server.py` file and send your external ip to others
 
 ## Built With
 
