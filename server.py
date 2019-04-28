@@ -2,13 +2,23 @@ from datetime import datetime
 from socket import socket
 from threading import Thread
 from urllib import request
-from json import loads
+from json import loads, JSONDecodeError
 
-config = open('config.json').read()
-config = loads(config)
+try:
+    config = open('config.json').read()
+    config = loads(config)
+except FileNotFoundError:
+    print("[ERROR] Configuration file not found! \nUsing standart variables...")
+    max_connections = 5
+    port = 8000
+except JSONDecodeError:
+    print("[ERROR] JSON deserialization error! \nUsing standart variables...")
+    max_connections = 5
+    port = 8000
+else:
+    max_connections = config[0]['max_connections']
+    port = config[1]['port']
 
-max_connections = config[0]['max_connections']
-port = config[1]['port']
 sock = socket()
 sock.bind(("", port))
 sock.listen(max_connections)
