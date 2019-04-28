@@ -2,9 +2,13 @@ from datetime import datetime
 from socket import socket
 from threading import Thread
 from urllib import request
+from json import loads
 
-max_connections = 5
-port = 3456
+config = open('config.json').read()
+config = loads(config)
+
+max_connections = config[0]['max_connections']
+port = config[1]['port']
 sock = socket()
 sock.bind(("", port))
 sock.listen(max_connections)
