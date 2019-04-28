@@ -4,17 +4,35 @@ from threading import Thread
 from urllib import request
 from json import loads, JSONDecodeError
 
+def configure(configure):
+    while configure == True:
+        print("Would you like to configure server now? [Y/n]")
+        answer = input("> ").lower()
+        if answer == "y":
+            try:
+                max_connections = int(input("Enter value for maximum connections > "))
+                port = int(input("Enter port > "))
+            except TypeError:
+                print("[ERROR] Answer must be only a number!")
+            finally:
+                return max_connections, port
+            configure = False
+        elif answer == "n":
+            configure = False
+            print("Using standart variables...")
+            return 5, 8000
+        else:
+            print("[ERROR] Unknown command!")
+
 try:
     config = open('config.json').read()
     config = loads(config)
 except FileNotFoundError:
     print("[ERROR] Configuration file not found! \nUsing standart variables...")
-    max_connections = 5
-    port = 8000
+    max_connections, port = configure(True)
 except JSONDecodeError:
     print("[ERROR] JSON deserialization error! \nUsing standart variables...")
-    max_connections = 5
-    port = 8000
+    max_connections, port = configre(True)
 else:
     max_connections = config[0]['max_connections']
     port = config[1]['port']
