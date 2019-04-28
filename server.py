@@ -3,35 +3,43 @@ from socket import socket
 from threading import Thread
 from urllib import request
 from json import loads, JSONDecodeError
+from os import system, name
+
+def clear():
+    system("cls" if name == 'nt' else 'clear')
 
 def configure(configure):
     while configure == True:
         print("Would you like to configure server now? [Y/n]")
-        answer = input("> ").lower()
+        answer = input("> ").lower().replace(" ", "")
         if answer == "y":
             try:
-                max_connections = int(input("Enter value for maximum connections > "))
-                port = int(input("Enter port > "))
+                clear()
+                max_connections = int(input("Enter value limit of connections > ").replace(" ", ""))
+                port = int(input("Enter port > ").replace(" ", ""))
+                clear()
             except TypeError:
                 print("[ERROR] Answer must be only a number!")
             finally:
                 return max_connections, port
-            configure = False
+                configure = False
         elif answer == "n":
             configure = False
+            clear()
             print("Using standart variables...")
             return 5, 8000
         else:
+            clear()
             print("[ERROR] Unknown command!")
 
 try:
     config = open('config.json').read()
     config = loads(config)
 except FileNotFoundError:
-    print("[ERROR] Configuration file not found! \nUsing standart variables...")
+    print("[ERROR] Configuration file not found!")
     max_connections, port = configure(True)
 except JSONDecodeError:
-    print("[ERROR] JSON deserialization error! \nUsing standart variables...")
+    print("[ERROR] JSON deserialization error!")
     max_connections, port = configre(True)
 else:
     max_connections = config[0]['max_connections']
