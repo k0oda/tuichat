@@ -1,6 +1,7 @@
 # PYChat
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Contributors](https://img.shields.io/github/contributors/Kukree/PYChat.svg)](https://github.com/Kukree/PYChat/contributors)
+[![Release](https://img.shields.io/github/release/Kukree/PYChat.svg)](https://github.com/Kukree/PYChat/releases)
 ![Repo-size](https://img.shields.io/github/repo-size/Kukree/PYChat.svg)
 [![Open-issues](https://img.shields.io/github/issues-raw/Kukree/PYChat.svg)](https://github.com/Kukree/PYChat/issues)
 [![Closed-issues](https://img.shields.io/github/issues-closed-raw/Kukree/PYChat.svg)](https://github.com/Kukree/PYChat/issues?q=is%3Aissue+is%3Aclosed)
@@ -41,15 +42,15 @@ For install and using this software you need:
 
 ## Deployment
 
-Just run the `server.py` file and send your external ip to others
+Run the `server.py` file and send your external ip to others
 
 ## Built With
 
-* [Python 3](https://python.org) - Programming language
+* [Python](https://python.org) - Programming language
 
 ## Versioning
 
-For the versions available, see the [tags on this repository](https://github.com/Kukree/PYChat/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/Kukree/PYChat/tags). 
 
 ## Authors
 
