@@ -13,12 +13,12 @@ def clear():
 def configure():
     while True:
         print("Would you like to configure server now? [Y/n]")
-        answer = input("> ").lower().replace(" ", "")
+        answer = input("> ").lower().strip()
         if answer == "y":
             try:
                 clear()
-                max_connections_input = int(input("Enter value for limit of connections > ").replace(" ", ""))
-                port_input = int(input("Enter port > ").replace(" ", ""))
+                max_connections_input = int(input("Enter value for limit of connections > ").strip())
+                port_input = int(input("Enter port > ").strip())
                 clear()
             except ValueError:
                 clear()
