@@ -1,8 +1,8 @@
 from socket import socket, timeout
 from threading import Thread
 
-host = "localhost"
-port = 3456
+host = input("Enter host: ").strip()
+port = input("Enter port: ").strip()
 msg_timeout = 1.0
 sock = socket()
 sock.connect((host, port))
@@ -23,7 +23,6 @@ class Client:
             print(data)
         except timeout:
             print("No new messages! \n")
-
 
     def send_data(self):
         message = input('Enter a message or enter "/r" to receive new messages > ')
