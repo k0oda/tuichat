@@ -10,6 +10,12 @@ def clear():
     system("cls" if name == 'nt' else 'clear')
 
 
+def save_log(data, open_type):
+    log_file = open("log.txt", open_type)
+    log_file.write(data)
+    log_file.close()
+
+
 def configure():
     while True:
         print("Would you like to configure server now? [Y/n]")
@@ -60,14 +66,15 @@ PYChat  Copyright (C) 2019  Greenfield
     under certain conditions.
 """)
 
-print(f"""
-+======================================================+
+info_table = f"""+======================================================+
 Server activated!
 Port: {port}
 Server limit of connections: {max_connections}
 External IP address: {external_ip}
 +======================================================+
-""")
+"""
+print(info_table)
+save_log(info_table, 'w')
 
 
 class Server:
@@ -108,11 +115,9 @@ class Server:
                 break
 
     def send_messages(self, message,):
+        save_log(message, 'a')
         for user in self.users:
-            try:
-                user.send(bytes(message, encoding="utf-8"))
-            except OSError:
-                user.close()
+            user.send(bytes(message, encoding="utf-8"))
 
 
 server = Server()
