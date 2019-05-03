@@ -5,26 +5,27 @@ from urllib import request
 from json import loads, JSONDecodeError
 from os import system, name
 
+
 def clear():
     system("cls" if name == 'nt' else 'clear')
 
-def configure(configure):
-    while configure == True:
+
+def configure():
+    while True:
         print("Would you like to configure server now? [Y/n]")
         answer = input("> ").lower().replace(" ", "")
         if answer == "y":
             try:
                 clear()
-                max_connections = int(input("Enter value limit of connections > ").replace(" ", ""))
-                port = int(input("Enter port > ").replace(" ", ""))
+                max_connections_input = int(input("Enter value for limit of connections > ").replace(" ", ""))
+                port_input = int(input("Enter port > ").replace(" ", ""))
                 clear()
-            except TypeError:
+            except ValueError:
+                clear()
                 print("[ERROR] Answer must be only a number!")
-            finally:
-                return max_connections, port
-                configure = False
+            else:
+                return max_connections_input, port_input
         elif answer == "n":
-            configure = False
             clear()
             print("Using standart variables...")
             return 5, 8000
@@ -32,15 +33,16 @@ def configure(configure):
             clear()
             print("[ERROR] Unknown command!")
 
+
 try:
     config = open('config.json').read()
     config = loads(config)
 except FileNotFoundError:
     print("[ERROR] Configuration file not found!")
-    max_connections, port = configure(True)
+    max_connections, port = configure()
 except JSONDecodeError:
     print("[ERROR] JSON deserialization error!")
-    max_connections, port = configre(True)
+    max_connections, port = configure()
 else:
     max_connections = config[0]['max_connections']
     port = config[1]['port']
@@ -82,22 +84,22 @@ class Server:
         print(new_user_msg)
         self.send_messages(new_user_msg + "\n")
 
-    def get_data(self, connection, address,):
+    def get_data(self, conn, address,):
         while True:
             try:
-                self.data = connection.recv(48634).decode('utf-8')
+                self.data = conn.recv(48634).decode('utf-8')
                 if self.data:
                     self.data = f"{self.time()} {address[0]} - {self.data}"
                     print(self.data)
                     self.send_messages(self.data + "\n")
             except ConnectionResetError:
-                connection.close()
+                conn.close()
                 connection_reset_msg = f"{self.time()} {address[0]} disconnected!"
                 print(connection_reset_msg)
                 self.send_messages(connection_reset_msg + "\n")
                 break
             except ConnectionAbortedError:
-                connection.close()
+                conn.close()
                 connection_aborted_msg = f"{self.time()} {address[0]} disconnected!"
                 print(connection_aborted_msg)
                 self.send_messages(connection_aborted_msg + "\n")
