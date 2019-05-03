@@ -94,12 +94,14 @@ class Server:
                     self.send_messages(self.data + "\n")
             except ConnectionResetError:
                 conn.close()
+                self.users.remove(conn)
                 connection_reset_msg = f"{self.time()} {address[0]} disconnected!"
                 print(connection_reset_msg)
                 self.send_messages(connection_reset_msg + "\n")
                 break
             except ConnectionAbortedError:
                 conn.close()
+                self.users.remove(conn)
                 connection_aborted_msg = f"{self.time()} {address[0]} disconnected!"
                 print(connection_aborted_msg)
                 self.send_messages(connection_aborted_msg + "\n")
