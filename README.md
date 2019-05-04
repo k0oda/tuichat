@@ -17,7 +17,7 @@ These instructions will get you a copy of the project up and running on your loc
 For install and using this software you need:
 
 ```
-* Python 3
+* Python 3 (if you want to contribute this program)
 * Git (if you clone this repository using Git)
 ```
 
@@ -29,16 +29,20 @@ For install and using this software you need:
 
 2. Install Python 3 if not installed
 
+> **Note**: For edit source code of this program you need **Python 3**
+
 ### Installing (№2) for users
 
-1. Get to [releases](https://github.com/Kukree/PYChat/releases)
+1. Go to [releases](https://github.com/Kukree/PYChat/releases)
 
-2. Download all *.exe files (**client.py**, **server.py**) and **config.json**
+2. Download **zip** archive with **server.exe**, **client.exe** and **config.json**
 
-3. Configure config.json using your text editor **(edit only variables marked in red square in screenshot)**
-![config.json](https://i.imgur.com/vTQbqEQ.png)
+3. Configure config.json using your text editor **(edit only variables after `:` symbol)**
+![config.json](https://imgur.com/PnX0O41.png)
 
 > **Note**: If you don't want to use **config.json** you can delete it and configure program at startup
+
+> **Note №2**: If you want to use this software without editing source code you don't need **Python 3**
 
 ## Deployment
 
