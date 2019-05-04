@@ -1,4 +1,4 @@
-from socket import socket, timeout
+from socket import socket, timeout, gaierror
 from threading import Thread
 from os import system, name
 
@@ -28,13 +28,22 @@ license = """
 
 print(logo)
 print(license)
-
-host = input("Enter host: ").strip()
-port = int(input("Enter port: ").strip())
-msg_timeout = 1.0
 sock = socket()
-sock.connect((host, port))
-sock.settimeout(msg_timeout)
+success_connect = False
+
+while not success_connect:
+    try:
+        host = input("║ Enter host: ").strip()
+        port = int(input("║ Enter port: ").strip())
+        msg_timeout = 1.0
+        sock.connect((host, port))
+        sock.settimeout(msg_timeout)
+    except gaierror:
+        print("║ Host not found!\n")
+    except ConnectionRefusedError:
+        print("║ Host rejected connection request!\n")
+    else:
+        success_connect = True
 clear()
 print(logo)
 print(license)
