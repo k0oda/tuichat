@@ -7,7 +7,7 @@ from os import system, name
 
 
 def time():
-    current_time = datetime.now().strftime('%Y-%m-%d | %H:%M:%S |')
+    current_time = datetime.now().strftime('%Y-%m-%d | %H:%M:%S ')
     return current_time
 
 
@@ -72,24 +72,42 @@ sock.bind(("", port))
 sock.listen(max_connections)
 external_ip = request.urlopen('http://ident.me').read().decode("utf-8")
 
+logo = """
+ ______   __  __     ______     __  __     ______     ______  
+/\  == \ /\ \_\ \   /\  ___\   /\ \_\ \   /\  __ \   /\__  _\ 
+\ \  _-/ \ \____ \  \ \ \____  \ \  __ \  \ \  __ \  \/_/\ \/ 
+ \ \_\    \/\_____\  \ \_____\  \ \_\ \_\  \ \_\ \_\    \ \_\ 
+  \/_/     \/_____/   \/_____/   \/_/\/_/   \/_/\/_/     \/_/ 
+                                                            
+"""
+print(logo)
 # License
 print("""
-PYChat  Copyright (C) 2019  Greenfield
-    This program comes with ABSOLUTELY NO WARRANTY.
-    This is free software, and you are welcome to redistribute it
-    under certain conditions.
+┌────────────────────────────────────────────────────────────────┐
+│ PYChat  Copyright (C) 2019  Greenfield                         │
+│ This program comes with ABSOLUTELY NO WARRANTY.                │
+│ This is free software, and you are welcome to redistribute it  │
+│ under certain conditions.                                      │
+└────────────────────────────────────────────────────────────────┘
 """)
 
-info_table = f"""+======================================================+
-{time()}
-Server activated!
-Port: {port}
-Server limit of connections: {max_connections}
-External IP address: {external_ip}
-Logging: {enable_log}
-+======================================================+
+info_table = f"""║ {time()}
+║ Server activated!
+║ Port: {port}
+║ Server limit of connections: {max_connections}
+║ External IP address: {external_ip}
+║ Logging: {enable_log}
 """
 print(info_table)
+info_table = f"""
+{time()}                                      
+Server activated!                             
+Port: {port}                                  
+Server limit of connections: {max_connections}
+External IP address: {external_ip}            
+Logging: {enable_log}
+
+"""
 if enable_log:
     save_log(info_table, 'w')
 
