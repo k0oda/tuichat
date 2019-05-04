@@ -54,11 +54,16 @@ class Client:
             print("No new messages! \n")
 
     def send_data(self):
-        message = input('Enter a message or enter "/r" to receive new messages > ')
-        if message.replace(" ", "") != "/r":
-            sock.send(bytes(message, encoding="utf-8"))
-        else:
-            self.receive_data()
+        try:
+            message = input('Enter a message or enter "/r" to receive new messages > ')
+            if message.replace(" ", "") != "/r":
+                sock.send(bytes(message, encoding="utf-8"))
+            else:
+                self.receive_data()
+        except ConnectionResetError:
+            print("\n║ Server closed!")
+            input("\n║ Press any key to exit...")
+            exit()
 
 
 client = Client()
