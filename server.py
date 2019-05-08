@@ -8,7 +8,7 @@ import pychat_ui
 
 
 class Server:
-    users = []
+    connections_list = []
 
     def clear_screen(self,):
         system("cls" if name == 'nt' else 'clear')
@@ -30,7 +30,7 @@ class Server:
 
     def accept_new_clients(self,):
         self.connection, self.address = self.sock.accept()
-        self.users.append(self.connection)
+        self.connections_list.append(self.connection)
         time = self.get_time()
         new_user_msg = f"{time} New user connected: {self.address[0]}"
         print(new_user_msg)
@@ -86,21 +86,23 @@ class Server:
     def get_data(self, conn, address,):
         while True:
             try:
-                self.data = conn.recv(1024).decode('utf-8')
-                if self.data:
-                    self.data = f"{self.get_time()} {address[0]} - {self.data}"
-                    print(self.data)
-                    self.send_messages(self.data + "\n")
+                size = int(conn.recv(14).decode('utf-8'))
+                data = conn.recv(size).decode('utf-8')
+                data = loads(data)
+                if data:
+                    data = f"{data['sending_time']} {address[0]} - {data['message']}"
+                    print(data)
+                    self.send_messages(data + "\n")
             except ConnectionResetError:
                 conn.close()
-                self.users.remove(conn)
+                self.connections_list.remove(conn)
                 connection_reset_msg = f"{self.get_time()} {address[0]} disconnected!"
                 print(connection_reset_msg)
                 self.send_messages(connection_reset_msg + "\n")
                 break
             except ConnectionAbortedError:
                 conn.close()
-                self.users.remove(conn)
+                self.connections_list.remove(conn)
                 connection_aborted_msg = f"{self.get_time()} {address[0]} disconnected!"
                 print(connection_aborted_msg)
                 self.send_messages(connection_aborted_msg + "\n")
@@ -109,7 +111,7 @@ class Server:
     def send_messages(self, message,):
         if enable_log:
             self.save_log(message, 'a')
-        for user in self.users:
+        for user in self.connections_list:
             user.sendall(bytes(message, encoding="utf-8"))
 
     def run_server(self, max_connections, port,):
