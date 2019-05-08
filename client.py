@@ -1,10 +1,17 @@
 from socket import socket, timeout, gaierror
 from threading import Thread
 from os import system, name
+from datetime import datetime
+from json import dumps
+import sys
 import pychat_ui
 
 
 class Client:
+    def get_time(self,):
+        current_time = datetime.now().strftime('%Y-%m-%d | %H:%M:%S ')
+        return current_time
+
     def clear_screen(self):
         system("cls" if name == 'nt' else 'clear')
 
@@ -19,8 +26,13 @@ class Client:
     def send_data(self):
         while True:
             try:
-                message = input('Enter a message or enter "/r" to receive new messages > ')
-                if message.replace(" ", "") != "/r":
+                message_input = input('Enter a message or enter "/r" to receive new messages > ')
+                if message_input.replace(" ", "") != "/r":
+                    message = dumps({
+                    "sending_time": self.get_time(),
+                    "message": message_input})
+                    size = sys.getsizeof(message)
+                    self.sock.sendall(bytes(str(size), encoding="utf-8"))
                     self.sock.sendall(bytes(message, encoding="utf-8"))
                 else:
                     self.receive_data()
