@@ -42,7 +42,6 @@ For install and using this software you need:
 
 > **Note**: If you don't want to use **config.json** you can delete it and configure program at startup
 
-> **Note №2**: If you want to use this software without editing source code you don't need **Python 3**
 
 ## Deployment
 
