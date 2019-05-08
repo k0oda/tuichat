@@ -38,11 +38,21 @@ For install and using this software you need:
 2. Download **zip** archive with **server.exe**, **client.exe** and **config.json**
 
 3. Configure config.json using your text editor **(edit only variables after `:` symbol)**
-![config.json](https://imgur.com/PnX0O41.png)
+![config.json](https://imgur.com/yTwS2dT.png)
 
 > **Note**: If you don't want to use **config.json** you can delete it and configure program at startup
 
 > **Note №2**: If you want to use this software without editing source code you don't need **Python 3**
+
+## Configuration file description:
+
+* `max_connections` - Variable used for set a limit of connections to server
+
+* `port` - Port to connect to your server, users will type it in client
+
+* `enable_log` [True/false] - Enable or disable saving logs of messages/connections or disconnections/other things, happened on server
+
+* `enable_ui` [True/false] - Enable or disable special UI symbols, like: logo, lines for highlighting system messages, borders around license block
 
 ## Deployment
 
@@ -64,4 +74,4 @@ See also the list of [contributors](https://github.com/Kukree/PYChat/contributor
 
 ## License
 
-This project is licensed under the GNU GPLv3 License - see the [LICENSE.md](LICENSE) file for details
+This project is licensed under the GNU GPLv3 - see the [LICENSE.md](LICENSE) file for details
