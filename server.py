@@ -2,7 +2,7 @@ from datetime import datetime
 from socket import socket
 from threading import Thread
 from urllib import request
-from json import loads, JSONDecodeError
+from json import loads, dumps, JSONDecodeError
 from os import system, name
 import pychat_ui
 
@@ -22,6 +22,12 @@ class Server:
         log_file.write(data)
         log_file.close()
 
+    def save_config(self, max_connections, port, enable_log, enable_ui):
+        parameters_list = [{"max_connections": max_connections}, {"port": port}, {"enable_log": enable_log}, {"enable_ui": enable_ui}]
+        config = open('config.json', 'w')
+        parametersJSON = dumps(parameters_list)
+        config.write(parametersJSON)
+
     def accept_new_clients(self):
         self.connection, self.address = sock.accept()
         self.users.append(self.connection)
@@ -39,6 +45,7 @@ class Server:
                     self.clear_screen()
                     max_connections_input = int(input("Enter value for limit of connections > ").strip())
                     port_input = int(input("Enter port > ").strip())
+
                     enable_log_input = input("Enable log? (Y/n) > ").lower().strip()
                     if enable_log_input == "y":
                         enable_log_input = True
@@ -46,11 +53,20 @@ class Server:
                         enable_log_input = False
                     else:
                         raise ValueError
+
                     enable_ui_input = input("Enable UI symbols? (Y/n) > ").lower().strip()
                     if enable_ui_input == "y":
                         enable_ui_input = True
                     elif enable_ui_input == 'n':
                         enable_ui_input = False
+                    else:
+                        raise ValueError
+
+                    save_config_input = input("Save current settings to new configuration file? (Y/n) > ").lower().strip()
+                    if save_config_input == "y":
+                        self.save_config(max_connections_input, port_input, enable_log_input, enable_ui_input)
+                    elif save_config_input == 'n':
+                        pass
                     else:
                         raise ValueError
                     self.clear_screen()
