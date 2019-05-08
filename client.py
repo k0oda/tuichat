@@ -4,6 +4,8 @@ from os import system, name
 from datetime import datetime
 from json import dumps
 import emoji
+from tqdm import tqdm
+import time
 import sys
 import pychat_ui
 
@@ -39,12 +41,36 @@ class Client:
                     self.receive_data()
             except (ConnectionResetError, BrokenPipeError):
                 print("\n║ Server closed!")
-                input("\n║ Press any key to exit...")
-                exit()
+                connect_again = input("Try to connect again? (Y/n) > ").lower().strip()
+                if connect_again == "y":
+                    respond = self.connect(repeat_connection = True)
+                    if respond == True:
+                        print("\n║ Connection established!\n")
+                        continue
+                    else:
+                        print("\n║ Server didn't respond!")
+                        input("Press any key to exit...")
+                        exit()
 
-    def connect(self):
+    def connect(self, repeat_connection = False, success_connect = False):
         self.sock = socket()
-        success_connect = False
+
+        if repeat_connection:
+            i = 0
+            pbar = tqdm(total=5)
+            while i <= 5:
+                try:
+                    self.sock.connect((self.host, self.port))
+                except:
+                    time.sleep(1)
+                    i += 1
+                    pbar.update(1)
+                else:
+                    pbar.close()
+                    return True
+            else:
+                pbar.close()
+                return False
 
         while not success_connect:
             try:
