@@ -116,7 +116,7 @@ class Server:
 
     def run_server(self, max_connections, port,):
         self.sock = socket()
-        self.sock.bind(("0.0.0.0", port))
+        self.sock.bind(("", port))
         self.sock.listen(max_connections)
         external_ip = request.urlopen('http://ident.me').read().decode("utf-8")
         start_time = server.get_time()

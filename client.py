@@ -3,6 +3,7 @@ from threading import Thread
 from os import system, name
 from datetime import datetime
 from json import dumps
+import emoji
 import sys
 import pychat_ui
 
@@ -26,7 +27,7 @@ class Client:
     def send_data(self):
         while True:
             try:
-                message_input = input('Enter a message or enter "/r" to receive new messages > ')
+                message_input = emoji.emojize(input('Enter a message or enter "/r" to receive new messages > '))
                 if message_input.replace(" ", "") != "/r":
                     message = dumps({
                     "sending_time": self.get_time(),
@@ -36,7 +37,7 @@ class Client:
                     self.sock.sendall(bytes(message, encoding="utf-8"))
                 else:
                     self.receive_data()
-            except ConnectionResetError:
+            except (ConnectionResetError, BrokenPipeError):
                 print("\n║ Server closed!")
                 input("\n║ Press any key to exit...")
                 exit()
