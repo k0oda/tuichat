@@ -29,7 +29,7 @@ class Server:
         config.write(parametersJSON)
 
     def accept_new_clients(self,):
-        self.connection, self.address = sock.accept()
+        self.connection, self.address = self.sock.accept()
         self.users.append(self.connection)
         time = self.get_time()
         new_user_msg = f"{time} New user connected: {self.address[0]}"
@@ -113,9 +113,9 @@ class Server:
             user.sendall(bytes(message, encoding="utf-8"))
 
     def run_server(self, max_connections, port,):
-        sock = socket()
-        sock.bind(("0.0.0.0", port))
-        sock.listen(max_connections)
+        self.sock = socket()
+        self.sock.bind(("0.0.0.0", port))
+        self.sock.listen(max_connections)
         external_ip = request.urlopen('http://ident.me').read().decode("utf-8")
         start_time = server.get_time()
         return external_ip, start_time

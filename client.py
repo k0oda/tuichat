@@ -11,7 +11,7 @@ class Client:
     def receive_data(self):
         while True:
             try:
-                data = sock.recv(1024).decode("utf-8")
+                data = self.sock.recv(1024).decode("utf-8")
                 print(data)
             except timeout:
                 break
@@ -21,13 +21,34 @@ class Client:
             try:
                 message = input('Enter a message or enter "/r" to receive new messages > ')
                 if message.replace(" ", "") != "/r":
-                    sock.sendall(bytes(message, encoding="utf-8"))
+                    self.sock.sendall(bytes(message, encoding="utf-8"))
                 else:
                     self.receive_data()
             except ConnectionResetError:
                 print("\n║ Server closed!")
                 input("\n║ Press any key to exit...")
                 exit()
+
+    def connect(self):
+        self.sock = socket()
+        success_connect = False
+
+        while not success_connect:
+            try:
+                host = input("║ Enter host: ").strip()
+                port = int(input("║ Enter port: ").strip())
+                msg_timeout = 1.0
+                self.sock.connect((host, port))
+                self.sock.settimeout(msg_timeout)
+            except gaierror:
+                print("║ Host not found!\n")
+            except ConnectionRefusedError:
+                print("║ Host rejected connection request!\n")
+            except ValueError:
+                print("║ Incorrect value!\n")
+            else:
+                success_connect = True
+        return host, port
 
 
 client = Client()
@@ -38,23 +59,7 @@ if __name__ == '__main__':
     license = pychat_ui.license.get_license()
     print(license)
 
-    sock = socket()
-    success_connect = False
-
-    # Try to connect to server
-    while not success_connect:
-        try:
-            host = input("║ Enter host: ").strip()
-            port = int(input("║ Enter port: ").strip())
-            msg_timeout = 1.0
-            sock.connect((host, port))
-            sock.settimeout(msg_timeout)
-        except gaierror:
-            print("║ Host not found!\n")
-        except ConnectionRefusedError:
-            print("║ Host rejected connection request!\n")
-        else:
-            success_connect = True
+    host, port = client.connect()
     client.clear_screen()
 
     print(logo)
