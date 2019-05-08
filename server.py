@@ -28,13 +28,19 @@ class Server:
         parametersJSON = dumps(parameters_list)
         config.write(parametersJSON)
 
-    def accept_new_clients(self,):
-        self.connection, self.address = self.sock.accept()
-        self.connections_list.append(self.connection)
-        time = self.get_time()
-        new_user_msg = f"{time} New user connected: {self.address[0]}"
-        print(new_user_msg)
-        self.send_messages(new_user_msg + "\n")
+    def accept_new_clients(self, connections_list, max_connections):
+        while True:
+            if len(connections_list) < max_connections:
+                self.connection, self.address = self.sock.accept()
+                self.connections_list.append(self.connection)
+                time = self.get_time()
+                new_user_msg = f"{time} New user connected: {self.address[0]}"
+                print(new_user_msg)
+                self.send_messages(new_user_msg + "\n")
+                get_msg = Thread(target=self.get_data, args=(self.connection, self.address,))
+                get_msg.start()
+            else:
+                continue
 
     def configure(self,):
         while True:
@@ -165,8 +171,6 @@ if __name__ == '__main__':
         if enable_log:
             server.save_log(info_table, 'w')
     print(info_table)
-    while True:  # Infinity accepting new connections and receiving data
-        connection = Thread(target=server.accept_new_clients())
-        connection.start()
-        get_msg = Thread(target=server.get_data, args=(server.connection, server.address,))
-        get_msg.start()
+
+    connection = Thread(target=server.accept_new_clients, args=(server.connections_list, max_connections,))
+    connection.start()
