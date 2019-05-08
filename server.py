@@ -10,25 +10,25 @@ import pychat_ui
 class Server:
     users = []
 
-    def clear_screen(self):
+    def clear_screen(self,):
         system("cls" if name == 'nt' else 'clear')
 
-    def get_time(self):
+    def get_time(self,):
         current_time = datetime.now().strftime('%Y-%m-%d | %H:%M:%S ')
         return current_time
 
-    def save_log(self, data, open_type):
+    def save_log(self, data, open_type,):
         log_file = open("log.txt", open_type)
         log_file.write(data)
         log_file.close()
 
-    def save_config(self, max_connections, port, enable_log, enable_ui):
+    def save_config(self, max_connections, port, enable_log, enable_ui,):
         parameters_list = [{"max_connections": max_connections}, {"port": port}, {"enable_log": enable_log}, {"enable_ui": enable_ui}]
         config = open('config.json', 'w')
         parametersJSON = dumps(parameters_list)
         config.write(parametersJSON)
 
-    def accept_new_clients(self):
+    def accept_new_clients(self,):
         self.connection, self.address = sock.accept()
         self.users.append(self.connection)
         time = self.get_time()
@@ -36,7 +36,7 @@ class Server:
         print(new_user_msg)
         self.send_messages(new_user_msg + "\n")
 
-    def configure(self):
+    def configure(self,):
         while True:
             print("Would you like to configure server now? [Y/n]")
             answer = input("> ").lower().strip()
@@ -112,10 +112,18 @@ class Server:
         for user in self.users:
             user.sendall(bytes(message, encoding="utf-8"))
 
+    def run_server(self, max_connections, port,):
+        sock = socket()
+        sock.bind(("0.0.0.0", port))
+        sock.listen(max_connections)
+        external_ip = request.urlopen('http://ident.me').read().decode("utf-8")
+        start_time = server.get_time()
+        return external_ip, start_time
+
 
 if __name__ == '__main__':
     server = Server()
-
+    
     try:
         config = open('config.json').read()
         config = loads(config)
@@ -137,17 +145,13 @@ if __name__ == '__main__':
             print("[ERROR] Error in config file!")
             max_connections, port, enable_log, enable_ui = server.configure()
 
-    sock = socket()
-    sock.bind(("0.0.0.0", port))
-    sock.listen(max_connections)
-    external_ip = request.urlopen('http://ident.me').read().decode("utf-8")
-    start_time = server.get_time()
-
     logo = pychat_ui.logo.get_logo('server') if enable_ui else pychat_ui.logo.get_raw_logo('server')
     print(logo)
 
     license = pychat_ui.license.get_license() if enable_ui else pychat_ui.license.get_raw_license()
     print(license)
+
+    external_ip, start_time = server.run_server(max_connections, port)
 
     if enable_ui:
         info_table = pychat_ui.server_infotable.get_infotable(start_time, port, max_connections, external_ip, enable_log, enable_ui)
