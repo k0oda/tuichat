@@ -34,16 +34,17 @@ class Client:
                     message = dumps({
                     "sending_time": self.get_time(),
                     "message": message_input})
-                    size = sys.getsizeof(message)
-                    self.sock.sendall(bytes(str(size), encoding="utf-8"))
                     self.sock.sendall(bytes(message, encoding="utf-8"))
+                    respond = self.sock.recv(1).decode('utf-8')
+                    if not respond:
+                        raise ConnectionResetError
                 else:
                     self.receive_data()
-            except (ConnectionResetError, BrokenPipeError):
+            except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError):
                 print("\n║ Server closed!")
                 connect_again = input("Try to connect again? (Y/n) > ").lower().strip()
                 if connect_again == "y":
-                    respond = self.connect(repeat_connection = True)
+                    respond = self.reconnect()
                     if respond == True:
                         print("\n║ Connection established!\n")
                         continue
@@ -51,33 +52,38 @@ class Client:
                         print("\n║ Server didn't respond!")
                         input("Press any key to exit...")
                         exit()
-
-    def connect(self, repeat_connection = False, success_connect = False):
-        self.sock = socket()
-
-        if repeat_connection:
-            i = 0
-            pbar = tqdm(total=5)
-            while i <= 5:
-                try:
-                    self.sock.connect((self.host, self.port))
-                except:
-                    time.sleep(1)
-                    i += 1
-                    pbar.update(1)
                 else:
-                    pbar.close()
-                    return True
+                    exit()
+
+    def reconnect(self,):
+        i = 0
+        pbar = tqdm(total=5)
+        while i <= 5:
+            try:
+                self.sock.close()
+                self.sock = socket()
+                self.sock.connect((self.host, self.port))
+            except:
+                time.sleep(1)
+                i += 1
+                pbar.update(1)
+                continue
             else:
                 pbar.close()
-                return False
+                return True
+        else:
+            pbar.close()
+            return False
+
+    def connect(self, success_connect = False):
+        self.sock = socket()
 
         while not success_connect:
             try:
-                host = input("║ Enter host: ").strip()
-                port = int(input("║ Enter port: ").strip())
+                self.host = input("║ Enter host: ").strip()
+                self.port = int(input("║ Enter port: ").strip())
                 msg_timeout = 1.0
-                self.sock.connect((host, port))
+                self.sock.connect((self.host, self.port))
                 self.sock.settimeout(msg_timeout)
             except gaierror:
                 print("║ Host not found!\n")
@@ -87,7 +93,7 @@ class Client:
                 print("║ Incorrect value!\n")
             else:
                 success_connect = True
-        return host, port
+        return self.host, self.port
 
 
 client = Client()
