@@ -6,6 +6,7 @@
   <a href="https://github.com/Kukree/PYChat/contributors/"><img src="https://img.shields.io/github/contributors/Kukree/PYChat.svg" alt="Contributors"></a>
   <a href="https://github.com/Kukree/PYChat/releases"><img src="https://img.shields.io/github/release/Kukree/PYChat.svg" alt="Release"></a>
   <img src="https://img.shields.io/github/repo-size/Kukree/PYChat.svg" alt="Repo size"></a>
+  <br>
   <a href="https://github.com/Kukree/PYChat/issues"><img src="https://img.shields.io/github/issues-raw/Kukree/PYChat.svg" alt="Open issues"></a>
   <a href="https://github.com/Kukree/PYChat/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed-raw/Kukree/PYChat.svg" alt="Closed issues"></a>
   <a href="https://github.com/Kukree/PYChat/releases"><img src="https://img.shields.io/github/downloads/Kukree/PYChat/total.svg" alt="Downloads"></a>
@@ -13,6 +14,17 @@
 <h3 align="center">A simple messaging program</h3>
 
 ---
+## Table of Contents
+- [Installing for users](#installing-1-for-users)
+- [Installing for developers](#installing-2-for-developers)
+- [Users manual (host)](#users-manual-host-or-server-holder)
+- [Users manual (client)](#users-manual-client)
+- [Configuration file description](#configuration-file-description)
+- [Contributing](#contributing)
+- [Authors](#authors)
+- [Tools](#built-with)
+- [Versioning](#versioning)
+- [License](#license)
 
 ## Getting Started
 
@@ -28,11 +40,9 @@
 
 ### Installing (№2) for developers
 
-#### Clone
-
 > Setup Git and type in git bash:
 
-```git
+```
 git clone https://github.com/Kukree/PYChat
 ```
 
@@ -75,6 +85,28 @@ git clone https://github.com/Kukree/PYChat
 - `enable_log` [True/false] - Enable or disable saving logs of messages/connections or disconnections/other things, happened on server
 
 - `enable_ui` [True/false] - Enable or disable special UI symbols, like: logo, lines for highlighting system messages, borders around license block
+
+## Contributing
+
+> To get started...
+
+### Step 1
+
+- **Option 1**
+    - 🍴 Fork this repo!
+
+- **Option 2**
+    - 👯 Clone this repo to your local machine using `https://github.com/Kukree/PYChat.git`
+
+### Step 2
+
+- **HACK AWAY!** 🔨🔨🔨
+
+### Step 3
+
+- 🔃 Create a new pull request using <a href="https://github.com/joanaz/HireDot2/compare/" target="_blank">`https://github.com/joanaz/HireDot2/compare/`</a>.
+
+---
 
 ## Built With
 
