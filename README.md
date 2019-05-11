@@ -5,7 +5,7 @@
   <a href="https://www.gnu.org/licenses/gpl-3.0/"><img src="https://img.shields.io/badge/license-GPLv3-blue.svg" alt="License - GNU GPLv3"></a>
   <a href="https://github.com/Kukree/PYChat/contributors/"><img src="https://img.shields.io/github/contributors/Kukree/PYChat.svg" alt="Contributors"></a>
   <a href="https://github.com/Kukree/PYChat/releases"><img src="https://img.shields.io/github/release/Kukree/PYChat.svg" alt="Release"></a>
-  <img src="https://img.shields.io/github/repo-size/Kukree/PYChat.svg" alt="Repo size"></a>
+  <img src="https://img.shields.io/github/repo-size/Kukree/PYChat.svg" alt="Repo size">
   <br>
   <a href="https://github.com/Kukree/PYChat/issues"><img src="https://img.shields.io/github/issues-raw/Kukree/PYChat.svg" alt="Open issues"></a>
   <a href="https://github.com/Kukree/PYChat/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed-raw/Kukree/PYChat.svg" alt="Closed issues"></a>
@@ -36,8 +36,6 @@
 
 > Download **zip** archive with **server.exe**, **client.exe** and **config.json**
 
-> **Note**: If you don't want to use **config.json** you can delete it and configure program at startup
-
 ### Installing (№2) for developers
 
 > Setup Git and type in git bash:
@@ -51,11 +49,15 @@ git clone https://github.com/Kukree/PYChat
 ### User's manual (host, or server holder)
 
 #### Configure 
+> Enter settings into **config.json** file and save it
+
 > **config.json**
 
 ![config.json](http://g.recordit.co/8sy8U1CTrp.gif)
 
 > **Note**: If you have problems with configuring, look at [configuration file description](#configuration-file-description)
+
+> **Note 2**: If you don't want to use **config.json** you can delete it and configure program at startup
 
 #### Running 
 > Run **server.exe** (on info table you will see information about your server, running port, limit of connections, external IP address, TUI graphics, logging and others)
