@@ -16,15 +16,15 @@
 ---
 ## Table of Contents
 - [Code of Conduct](CODE_OF_CONDUCT.md)
-- Installing
+- **Installing**
   - [Installing for users](#installing-1-for-users)
   - [Installing for developers](#installing-2-for-developers)
-- User's manual
+- **User's manual**
   - [User's manual (host)](#users-manual-host-or-server-holder)
   - [User's manual (client)](#users-manual-client)
-- Configuration
+- **Configuration**
   - [Configuration file description](#configuration-file-description)
-- Other info
+- **Other info**
   - [Contributing](#contributing)
   - [Authors](#authors)
   - [Tools](#built-with)
@@ -111,7 +111,7 @@ git clone https://github.com/Kukree/PYChat
 
 ### Step 3
 
-- 🔃 Create a new pull request using <a href="https://github.com/joanaz/HireDot2/compare/" target="_blank">`https://github.com/joanaz/HireDot2/compare/`</a>.
+- 🔃 Create a new pull request using <a href="https://github.com/joanaz/HireDot2/compare/" target="_blank">`https://github.com/Kukree/PYChat/compare/`</a>.
 
 ---
 
