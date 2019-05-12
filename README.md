@@ -16,16 +16,20 @@
 ---
 ## Table of Contents
 - [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Installing for users](#installing-1-for-users)
-- [Installing for developers](#installing-2-for-developers)
-- [Users manual (host)](#users-manual-host-or-server-holder)
-- [Users manual (client)](#users-manual-client)
-- [Configuration file description](#configuration-file-description)
-- [Contributing](#contributing)
-- [Authors](#authors)
-- [Tools](#built-with)
-- [Versioning](#versioning)
-- [License](#license)
+- Installing
+  - [Installing for users](#installing-1-for-users)
+  - [Installing for developers](#installing-2-for-developers)
+- User's manual
+  - [User's manual (host)](#users-manual-host-or-server-holder)
+  - [User's manual (client)](#users-manual-client)
+- Configuration
+  - [Configuration file description](#configuration-file-description)
+- Other info
+  - [Contributing](#contributing)
+  - [Authors](#authors)
+  - [Tools](#built-with)
+  - [Versioning](#versioning)
+  - [License](#license)
 
 ## Getting Started
 
