@@ -2,6 +2,8 @@
 
 ## Table of contents
 
+> Also read [README.md](README.md) file
+
 - **Main Standarts**
   - [Our Pledge](#our-pledge)
   - [Our Standarts](#our-standarts)
