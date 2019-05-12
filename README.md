@@ -15,6 +15,7 @@
 
 ---
 ## Table of Contents
+- [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Installing for users](#installing-1-for-users)
 - [Installing for developers](#installing-2-for-developers)
 - [Users manual (host)](#users-manual-host-or-server-holder)
