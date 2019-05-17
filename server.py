@@ -126,7 +126,7 @@ class Server:
             self.save_log(message, 'a')
         message = self.serialize_data(self.get_time(), data_dict['message'], address)
         for client in self.connections_list:
-            message = dumps(message)
+
             client.sendall(bytes(message, encoding='utf-8'))
 
     def run_server(self, max_connections, port,):

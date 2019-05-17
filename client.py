@@ -22,10 +22,8 @@ class Client:
             data = self.sock.recv(2048).decode('utf-8')
             print(data)
             data_dict = loads(data)
-            for d in data_dict:
-                d = loads(d)
-                d = f"{d['sending_time']} {d['sender_address']} - {d['message']}"
-                print(d)
+            data = f"{data_dict['sending_time']} {data_dict['sender_address']} - {data_dict['message']}"
+            print(data)
         except timeout:
             return
 
