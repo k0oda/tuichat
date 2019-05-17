@@ -27,7 +27,7 @@ class Client:
                 d = f"{d['sending_time']} {d['sender_address']} - {d['message']}"
                 print(d)
         except timeout:
-            break
+            return
 
     def send_data(self,):
         while True:
