@@ -23,28 +23,6 @@ class Server:
         log_file.write(data)
         log_file.close()
 
-    def save_config(self, max_connections, port, enable_log, enable_ui,):
-        parameters_list = [{'max_connections': max_connections}, {'port': port}, {'enable_log': enable_log}, {'enable_ui': enable_ui}]
-        config = open('config.json', 'w')
-        parametersJSON = dumps(parameters_list)
-        config.write(parametersJSON)
-
-    def accept_new_clients(self, connections_list, max_connections):
-        while True:
-            if len(connections_list) < max_connections:
-                self.connection, self.address = self.sock.accept()
-                self.connections_list.append(self.connection)
-                time = self.get_time()
-                print(f'{self.get_time()} {self.address[0]} connected!')
-                new_user_msg = self.serialize_data(self.get_time(), 'connected!', self.address[0])
-                self.send_messages(new_user_msg)
-                get_msg = Thread(target=self.get_data, args=(self.connection, self.address[0]))
-                get_msg.start()
-            else:
-                self.connection, self.address = self.sock.accept()
-                full_server_error = self.serialize_data(self.get_time(), 'Server is full!', 'Server:')
-                self.connection.sendall(bytes(dumps(full_server_error)))
-
     def configure(self,):
         while True:
             print('Would you like to configure server now? [Y/n]')
@@ -92,41 +70,64 @@ class Server:
                 self.clear_screen()
                 print('[ERROR] Unknown command!')
 
-    def get_data(self, conn, address):
+    def save_config(self, max_connections, port, enable_log, enable_ui,):
+        parameters_list = [{'max_connections': max_connections}, {'port': port}, {'enable_log': enable_log}, {'enable_ui': enable_ui}]
+        config = open('config.json', 'w')
+        parametersJSON = dumps(parameters_list)
+        config.write(parametersJSON)
+
+    def accept_new_clients(self, connections_list, max_connections,):
+        while True:
+            if len(connections_list) < max_connections:
+                connection, address = self.sock.accept()
+                self.connections_list.append(connection)
+                time = self.get_time()
+                print(f'{self.get_time()} {address[0]} connected!')
+                new_user_msg = {'message': 'connected!'}
+                self.send_messages(new_user_msg, address[0])
+                get_msg = Thread(target=self.get_data, args=(connection, address[0]))
+                get_msg.start()
+            else:
+                temp_connection, temp_address = self.sock.accept()
+                full_server_error = self.serialize_data(self.get_time(), 'Server is full!', 'Server:')
+                temp_connection.sendall(bytes(dumps(full_server_error)))
+                temp_connection.close()
+
+    def get_data(self, conn, address,):
         while True:
             try:
                 data = conn.recv(2048).decode('utf-8')
                 if data:
                     data_dict = loads(data)
-                    data = f'{data_dict["sending_time"]} {address} - {data_dict["message"]}'
+                    data = f'{self.get_time()} {address} - {data_dict["message"]}'
                     print(data)
                     # conn.send(bytes(encoding='utf-8')) # Respond to client that server got message
-                    send_data = self.serialize_data(data_dict['sending_time'], data_dict['message'], address)
-                    self.send_messages(send_data)
+                    self.send_messages(data_dict, address)
             except (ConnectionResetError, ConnectionAbortedError):
-            	conn.close()
-            	self.connections_list.remove(conn)
-            	print(f'{self.get_time()} {self.address[0]} disconnected!')
-            	connection_aborted_msg = self.serialize_data(self.get_time(), 'disconnected!', self.address[0])
-            	self.send_messages(connection_aborted_msg)
-            	break
+                conn.close()
+                self.connections_list.remove(conn)
+                print(f'{self.get_time()} {self.address[0]} disconnected!')
+                connection_aborted_msg = {'message': 'disconnected!'}
+                self.send_messages(connection_aborted_msg, address)
+                break
     
-    def serialize_data(self, sending_time, message, address):
-    	message_dict = {
-    		'sending_time': sending_time,
-    		'message': message,
-    		'sender_address': address,
-    		}
-    	serialized_dict = dumps(message_dict)
-    	return serialized_dict
+    def serialize_data(self, sending_time, message, address,):
+        message_dict = {
+            'sending_time': sending_time,
+            'message': message,
+            'sender_address': address
+            }
+        serialized_dict = dumps(message_dict)
+        return serialized_dict
 
-
-    def send_messages(self, message):
+    def send_messages(self, data_dict, address):
         if enable_log:
+            message = f'{self.get_time()}, {data_dict["message"]}, {address}'
             self.save_log(message, 'a')
-        for user in self.connections_list:
+        message = self.serialize_data(self.get_time(), data_dict['message'], address)
+        for client in self.connections_list:
             message = dumps(message)
-            user.sendall(bytes(message, encoding='utf-8'))
+            client.sendall(bytes(message, encoding='utf-8'))
 
     def run_server(self, max_connections, port,):
         self.sock = socket()
