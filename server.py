@@ -170,15 +170,15 @@ if __name__ == '__main__':
 
     external_ip, start_time = server.run_server(max_connections, port)
 
+    raw_info_table = pychat_ui.server_infotable.get_raw_infotable(start_time, port, max_connections, external_ip, enable_log, enable_ui)
     if enable_ui:
         info_table = pychat_ui.server_infotable.get_infotable(start_time, port, max_connections, external_ip, enable_log, enable_ui)
-        raw_info_table = pychat_ui.server_infotable.get_raw_infotable(start_time, port, max_connections, external_ip, enable_log, enable_ui)
         if enable_log:
-            server.save_log(raw_info_table, 'w')
+            server.save_log(raw_info_table, 'a')
     else:
-        info_table = pychat_ui.server_infotable.get_raw_infotable(start_time, port, max_connections, external_ip, enable_log, enable_ui)
+        info_table = raw_info_table
         if enable_log:
-            server.save_log(info_table, 'w')
+            server.save_log(raw_info_table, 'a')
     print(info_table)
 
     connection = Thread(target=server.accept_new_clients, args=(server.connections_list, max_connections,))
