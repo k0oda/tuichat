@@ -1,74 +1,64 @@
-import sys
-import pychat_ui
-from datetime import datetime
+from pychat_utils import ui, data_handler
 from socket import socket
 from threading import Thread
 from urllib import request
 from json import loads, dumps, JSONDecodeError
-from os import system, name
 
 
 class Server:
     connections_list = []
+    guid = 'a3fd558d-9921-4176-8e9d-c0028642c549'
 
-    def clear_screen(self,):
-        system('cls' if name == 'nt' else 'clear')
+    def main(self,):
+        try:
+            config = open('config.json').read()
+            config = loads(config)
+        except FileNotFoundError:
+            print('[ERROR] Configuration file not found!')
+            self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
+        except JSONDecodeError:
+            print('[ERROR] JSON decoding error!')
+            self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
+        else:
+            try:
+                self.max_connections = config[0]['max_connections']
+                if self.max_connections <= 0:
+                    raise ValueError
+                self.port = config[1]['port']
+                enable_log = config[2]['enable_log']
+                self.enable_log = bool(enable_log)
+                enable_ui = config[3]['enable_ui']
+                self.enable_ui = bool(enable_ui)
+            except (ValueError, KeyError):
+                print('[ERROR] Error in config file! Check variables')
+                self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
 
-    def get_time(self,):
-        current_time = datetime.now().strftime('%Y-%m-%d | %H:%M:%S ')
-        return current_time
+        logo = ui.Logo.get_logo('server') if enable_ui else ui.Logo.get_raw_logo('server')
+        print(logo)
+
+        license = ui.License.get_license() if enable_ui else ui.License.get_raw_license()
+        print(license)
+
+        external_ip, start_time = self.run_server()
+
+        raw_info_table = ui.Server_infotable.get_raw_infotable(start_time, self.port, self.max_connections, external_ip, self.enable_log, self.enable_ui)
+        if enable_ui:
+            info_table = ui.Server_infotable.get_infotable(start_time, self.port, self.max_connections, external_ip, self.enable_log, self.enable_ui)
+            if enable_log:
+                server.save_log(raw_info_table, 'a')
+        else:
+            info_table = raw_info_table
+            if enable_log:
+                server.save_log(raw_info_table, 'a')
+        print(info_table)
+
+        connection = Thread(target=self.accept_new_clients)
+        connection.start()
 
     def save_log(self, data, open_type,):
         log_file = open('log.txt', open_type)
         log_file.write(data)
         log_file.close()
-
-    def configure(self,):
-        while True:
-            print('Would you like to configure server now? [Y/n]')
-            answer = input('> ').lower().strip()
-            if answer == 'y':
-                try:
-                    self.clear_screen()
-                    max_connections_input = int(input('Enter value for limit of connections > ').strip())
-                    port_input = int(input('Enter port > ').strip())
-
-                    enable_log_input = input('Enable log? (Y/n) > ').lower().strip()
-                    if enable_log_input =='y':
-                        enable_log_input = True
-                    elif enable_log_input == 'n':
-                        enable_log_input = False
-                    else:
-                        raise ValueError
-
-                    enable_ui_input = input('Enable UI symbols? (Y/n) > ').lower().strip()
-                    if enable_ui_input == 'y':
-                        enable_ui_input = True
-                    elif enable_ui_input == 'n':
-                        enable_ui_input = False
-                    else:
-                        raise ValueError
-
-                    save_config_input = input('Save current settings to new configuration file? (Y/n) > ').lower().strip()
-                    if save_config_input == 'y':
-                        self.save_config(max_connections_input, port_input, enable_log_input, enable_ui_input)
-                    elif save_config_input == 'n':
-                        pass
-                    else:
-                        raise ValueError
-                    self.clear_screen()
-                except ValueError:
-                    self.clear_screen()
-                    print('[ERROR] Error in data entry!')
-                else:
-                    return max_connections_input, port_input, enable_log_input, enable_ui_input
-            elif answer == 'n':
-                self.clear_screen()
-                print('Using standart variables...')
-                return 5, 8000, False, False
-            else:
-                self.clear_screen()
-                print('[ERROR] Unknown command!')
 
     def save_config(self, max_connections, port, enable_log, enable_ui,):
         parameters_list = [{'max_connections': max_connections}, {'port': port}, {'enable_log': enable_log}, {'enable_ui': enable_ui}]
@@ -76,13 +66,45 @@ class Server:
         parametersJSON = dumps(parameters_list)
         config.write(parametersJSON)
 
-    def accept_new_clients(self, connections_list, max_connections,):
+    def configure(self,):
         while True:
-            if len(connections_list) < max_connections:
+            print('Would you like to configure server now? [Y/n]')
+            answer = input('> ').lower().strip()
+            if answer == 'y':
+                try:
+                    data_handler.clear_screen()
+                    max_connections_input = data_handler.Server.two_choice('max_connections')
+                    port_input = data_handler.Server.two_choice('port')
+
+                    enable_log_input = data_handler.Server.two_choice('enable_log')
+                    enable_ui_input = data_handler.Server.two_choice('enable_ui')
+
+                    save_config_input = input('Save current settings to new configuration file? (Y/n) > ').lower().strip()
+                    if save_config_input == 'y':
+                        self.save_config(max_connections_input, port_input, enable_log_input, enable_ui_input)
+                    else:
+                        pass
+                    data_handler.clear_screen()
+                except ValueError:
+                    data_handler.clear_screen()
+                    print('[ERROR] Error in data entry!')
+                else:
+                    return max_connections_input, port_input, enable_log_input, enable_ui_input
+            elif answer == 'n':
+                data_handler.clear_screen()
+                print('Using standart variables...')
+                return 5, 8000, False, False
+            else:
+                data_handler.clear_screen()
+                print('[ERROR] Unknown command!')
+
+    def accept_new_clients(self,):
+        while True:
+            if len(self.connections_list) < self.max_connections:
                 connection, address = self.sock.accept()
                 self.connections_list.append(connection)
-                time = self.get_time()
-                print(f'{self.get_time()} {address[0]} connected!')
+                time = data_handler.get_time()
+                print(f'{data_handler.get_time()} {address[0]} connected!')
                 new_user_msg = {'message': 'connected!'}
                 self.send_messages(new_user_msg, address[0])
                 get_msg = Thread(target=self.get_data, args=(connection, address[0]))
@@ -90,7 +112,7 @@ class Server:
                 get_msg.join()
             else:
                 temp_connection, temp_address = self.sock.accept()
-                full_server_error = self.serialize_data(self.get_time(), 'Server is full!', 'Server:')
+                full_server_error = data_handler.Server.serialize_server_data(data_handler.get_time(), 'Server is full!', 'Server:')
                 temp_connection.sendall(bytes(dumps(full_server_error), encoding='utf-8'))
                 temp_connection.close()
 
@@ -102,84 +124,34 @@ class Server:
                 data = data[:-1]
                 for element in data:
                     data_dict = loads(element)
-                    data = f'{self.get_time()} {address} - {data_dict["message"]}'
+                    data = f'{data_handler.get_time()} {address} - {data_dict["message"]}'
                     print(data)
                     self.send_messages(data_dict, address)
             except (ConnectionResetError, ConnectionAbortedError):
                 conn.close()
                 self.connections_list.remove(conn)
-                print(f'{self.get_time()} {address} disconnected!')
+                print(f'{data_handler.get_time()} {address} disconnected!')
                 connection_aborted_msg = {'message': 'disconnected!'}
                 self.send_messages(connection_aborted_msg, address)
                 break
-    
-    def serialize_data(self, message, address,):
-        message_dict = {
-            'message': message,
-            'sender_address': address
-            }
-        serialized_dict = dumps(message_dict) + 'a3fd558d-9921-4176-8e9d-c0028642c549'
-        return serialized_dict
 
     def send_messages(self, data_dict, address):
-        if enable_log:
-            message = f'{self.get_time()} {address} {data_dict["message"]}\n'
+        if self.enable_log:
+            message = f'{data_handler.get_time()} {address} {data_dict["message"]}\n'
             self.save_log(message, 'a')
-        message = self.serialize_data(data_dict['message'], address)
+        message = data_handler.Server.serialize_server_data(data_dict['message'], address, self.guid)
         for client in self.connections_list:
             client.sendall(bytes(message, encoding='utf-8'))
 
-    def run_server(self, max_connections, port,):
+    def run_server(self,):
         self.sock = socket()
-        self.sock.bind(("", port))
-        self.sock.listen(max_connections)
+        self.sock.bind(("", self.port))
+        self.sock.listen(self.max_connections)
         external_ip = request.urlopen('http://ident.me').read().decode('utf-8')
-        start_time = server.get_time()
+        start_time = data_handler.get_time()
         return external_ip, start_time
 
 
 if __name__ == '__main__':
     server = Server()
-    
-    try:
-        config = open('config.json').read()
-        config = loads(config)
-    except FileNotFoundError:
-        print('[ERROR] Configuration file not found!')
-        max_connections, port, enable_log, enable_ui = server.configure()
-    except JSONDecodeError:
-        print('[ERROR] JSON decoding error!')
-        max_connections, port, enable_log, enable_ui = server.configure()
-    else:
-        try:
-            max_connections = config[0]['max_connections']
-            port = config[1]['port']
-            enable_log = config[2]['enable_log']
-            enable_log = bool(enable_log)
-            enable_ui = config[3]['enable_ui']
-            enable_ui = bool(enable_ui)
-        except ValueError:
-            print('[ERROR] Error in config file!')
-            max_connections, port, enable_log, enable_ui = server.configure()
-
-    logo = pychat_ui.logo.get_logo('server') if enable_ui else pychat_ui.logo.get_raw_logo('server')
-    print(logo)
-
-    license = pychat_ui.license.get_license() if enable_ui else pychat_ui.license.get_raw_license()
-    print(license)
-
-    external_ip, start_time = server.run_server(max_connections, port)
-
-    raw_info_table = pychat_ui.server_infotable.get_raw_infotable(start_time, port, max_connections, external_ip, enable_log, enable_ui)
-    if enable_ui:
-        info_table = pychat_ui.server_infotable.get_infotable(start_time, port, max_connections, external_ip, enable_log, enable_ui)
-        if enable_log:
-            server.save_log(raw_info_table, 'a')
-    else:
-        info_table = raw_info_table
-        if enable_log:
-            server.save_log(raw_info_table, 'a')
-    print(info_table)
-
-    connection = Thread(target=server.accept_new_clients, args=(server.connections_list, max_connections,))
-    connection.start()
+    server.main()

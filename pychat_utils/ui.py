@@ -1,6 +1,6 @@
-class server_infotable():
-	def get_infotable(time, port, max_connections, external_ip, enable_log, enable_ui):
-		infotable = f"""║ {time}
+class Server_infotable():
+    def get_infotable(time, port, max_connections, external_ip, enable_log, enable_ui):
+        infotable = f"""║ {time}
 ║ Server activated!
 ║ Port: {port}
 ║ Server limit of connections: {max_connections}
@@ -8,10 +8,10 @@ class server_infotable():
 ║ Logging: {enable_log}
 ║ UI symbols: {enable_ui}
 """
-		return infotable
+        return infotable
 
-	def get_raw_infotable(time, port, max_connections, external_ip, enable_log, enable_ui):
-		raw_infotable = f"""
+    def get_raw_infotable(time, port, max_connections, external_ip, enable_log, enable_ui):
+        raw_infotable = f"""
 {time}                                      
 Server activated!                             
 Port: {port}                                  
@@ -21,14 +21,14 @@ Logging: {enable_log}
 UI symbols: {enable_ui}
 
 """
-		return raw_infotable
+        return raw_infotable
 
 
-class logo():
-	def get_logo(program_type):
-		program_type = program_type.lower().replace(" ", "")
-		if program_type == 'server':
-			logo = """
+class Logo():
+    def get_logo(program_type):
+        program_type = program_type.lower().replace(" ", "")
+        if program_type == 'server':
+            logo = """
  _____ __ __ _____ _       _   
 |  _  |  |  |     | |_ ___| |_ 
 |   __|_   _|   --|   | .'|  _|
@@ -37,8 +37,8 @@ class logo():
 |_ -| -_|  _| | | -_|  _|      
 |___|___|_|  \_/|___|_|     
 """
-		elif program_type == 'client':
-			logo = """
+        elif program_type == 'client':
+            logo = """
  _____ __ __ _____ _       _   
 |  _  |  |  |     | |_ ___| |_ 
 |   __|_   _|   --|   | .'|  _|
@@ -48,20 +48,20 @@ class logo():
 |  _| | | -_|   |  _|          
 |___|_|_|___|_|_|_|                  
 """
-		return logo
+        return logo
 
-	def get_raw_logo(program_type):
-		program_type = program_type.lower().replace(" ", "")
-		if program_type == "server":
-			logo = "PYChat.Server\n"
-		elif program_type == "client":
-			logo = "PYChat.Client\n"
-		return logo
+    def get_raw_logo(program_type):
+        program_type = program_type.lower().replace(" ", "")
+        if program_type == "server":
+            logo = "PYChat.Server\n"
+        elif program_type == "client":
+            logo = "PYChat.Client\n"
+        return logo
 
 
-class license():
-	def get_license():
-		license = """
+class License():
+    def get_license():
+        license = """
 ┌────────────────────────────────────────────────────────────────┐
 │ PYChat  Copyright (C) 2019  Greenfield                         │
 │ This program comes with ABSOLUTELY NO WARRANTY.                │
@@ -69,29 +69,29 @@ class license():
 │ under certain conditions.                                      │
 └────────────────────────────────────────────────────────────────┘
 """
-		return license
+        return license
 
-	def get_raw_license():
-		license = """
+    def get_raw_license():
+        license = """
 PYChat  Copyright (C) 2019  Greenfield
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
 """
-		return license
+        return license
 
 
-class connection_info():
-	def get_connection_info(host, port):
-		connection_info = f"""║ Connection established!
+class Connection_info():
+    def get_connection_info(host, port):
+        connection_info = f"""║ Connection established!
 ║ Host: {host}
 ║ Port: {port}
 """
-		return connection_info
+        return connection_info
 
-	def get_raw_connection_info(host, port):
-		raw_connection_info = f"""Connection established!
+    def get_raw_connection_info(host, port):
+        raw_connection_info = f"""Connection established!
 Host: {host}
 Port: {port}
 """
-		return raw_connection_info
+        return raw_connection_info
