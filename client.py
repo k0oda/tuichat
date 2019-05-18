@@ -8,7 +8,6 @@ from time import sleep
 
 class Client:
     data_queue = []
-    guid = 'a3fd558d-9921-4176-8e9d-c0028642c549'
 
     def main(self,):
         logo = ui.Logo.get_logo('client')
@@ -19,7 +18,6 @@ class Client:
 
         host, port = self.connect()
         data_handler.clear_screen()
-
         print(logo)
         print(license)
 
@@ -33,7 +31,7 @@ class Client:
         while True:
             try:
                 data = self.sock.recv(65536).decode('utf-8')
-                data = data.split('a3fd558d-9921-4176-8e9d-c0028642c549')
+                data = data.split(self.uuid)
                 data = data[:-1]
                 for element in data:
                     data_dict = loads(element)
@@ -52,7 +50,7 @@ class Client:
                 message_input = input('Enter a message or enter "/r" to receive new messages > ')
                 Timer(1.0, self.receive_data).start()
                 if message_input != "/r":
-                    message = data_handler.Client.serialize_client_data(message_input, self.guid)
+                    message = data_handler.Client.serialize_client_data(message_input, self.uuid)
                     self.sock.sendall(bytes(message, encoding="utf-8"))
                 else:
                     self.print_data()
@@ -108,6 +106,9 @@ class Client:
             except ValueError:
                 print("║ Incorrect value!\n")
             else:
+                uuid = self.sock.recv(256).decode('utf-8')
+                uuid = loads(uuid)
+                self.uuid = uuid['uuid']
                 success_connect = True
         return self.host, self.port
 

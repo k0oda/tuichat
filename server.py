@@ -3,11 +3,12 @@ from socket import socket
 from threading import Thread
 from urllib import request
 from json import loads, dumps, JSONDecodeError
+from uuid import uuid4
 
 
 class Server:
     connections_list = []
-    guid = 'a3fd558d-9921-4176-8e9d-c0028642c549'
+    uuid = str(uuid4())
 
     def main(self,):
         try:
@@ -104,6 +105,7 @@ class Server:
                 connection, address = self.sock.accept()
                 self.connections_list.append(connection)
                 time = data_handler.get_time()
+                connection.send(bytes(dumps({'uuid': self.uuid}), encoding='utf-8'))
                 print(f'{data_handler.get_time()} {address[0]} connected!')
                 new_user_msg = {'message': 'connected!'}
                 self.send_messages(new_user_msg, address[0])
@@ -120,7 +122,7 @@ class Server:
         while True:
             try:
                 data = conn.recv(65536).decode('utf-8')
-                data = data.split('a3fd558d-9921-4176-8e9d-c0028642c549')
+                data = data.split(self.uuid)
                 data = data[:-1]
                 for element in data:
                     data_dict = loads(element)
@@ -139,7 +141,7 @@ class Server:
         if self.enable_log:
             message = f'{data_handler.get_time()} {address} {data_dict["message"]}\n'
             self.save_log(message, 'a')
-        message = data_handler.Server.serialize_server_data(data_dict['message'], address, self.guid)
+        message = data_handler.Server.serialize_server_data(data_dict['message'], address, self.uuid)
         for client in self.connections_list:
             client.sendall(bytes(message, encoding='utf-8'))
 
