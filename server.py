@@ -87,6 +87,7 @@ class Server:
                 self.send_messages(new_user_msg, address[0])
                 get_msg = Thread(target=self.get_data, args=(connection, address[0]))
                 get_msg.start()
+                get_msg.join()
             else:
                 temp_connection, temp_address = self.sock.accept()
                 full_server_error = self.serialize_data(self.get_time(), 'Server is full!', 'Server:')
@@ -96,12 +97,13 @@ class Server:
     def get_data(self, conn, address,):
         while True:
             try:
-                data = conn.recv(2048).decode('utf-8')
-                if data:
-                    data_dict = loads(data)
+                data = conn.recv(65536).decode('utf-8')
+                data = data.split('a3fd558d-9921-4176-8e9d-c0028642c549')
+                data = data[:-1]
+                for element in data:
+                    data_dict = loads(element)
                     data = f'{self.get_time()} {address} - {data_dict["message"]}'
                     print(data)
-                    # conn.send(bytes(encoding='utf-8')) # Respond to client that server got message
                     self.send_messages(data_dict, address)
             except (ConnectionResetError, ConnectionAbortedError):
                 conn.close()
@@ -121,7 +123,7 @@ class Server:
 
     def send_messages(self, data_dict, address):
         if enable_log:
-            message = f'{self.get_time()}, {data_dict["message"]}, {address}'
+            message = f'{self.get_time()} {address} {data_dict["message"]}\n'
             self.save_log(message, 'a')
         message = self.serialize_data(data_dict['message'], address)
         for client in self.connections_list:

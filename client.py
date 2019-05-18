@@ -1,5 +1,5 @@
 from socket import socket, timeout, gaierror
-from threading import Thread
+from threading import Thread, Timer
 from os import system, name
 from datetime import datetime
 from json import dumps, loads
@@ -22,28 +22,29 @@ class Client:
     def receive_data(self,):
         while True:
             try:
-                data = self.sock.recv(2048).decode('utf-8')
-                data = filter(None, data.split('a3fd558d-9921-4176-8e9d-c0028642c549'))
+                data = self.sock.recv(65536).decode('utf-8')
+                data = data.split('a3fd558d-9921-4176-8e9d-c0028642c549')
+                data = data[:-1]
                 for element in data:
                     data_dict = loads(element)
-                    self.data_list.append(f"{self.get_time()} {data_dict['sender_address']} - {data_dict['message']}")
+                    self.data_list.append(f'{self.get_time()} {data_dict["sender_address"]} - {data_dict["message"]}')
             except timeout:
                 break
 
     def print_data(self,):
         for data in self.data_list:
             print(data)
-        self.data_list = []
+        self.data_list.clear()
 
     def send_data(self,):
         while True:
             try:
                 message_input = input('Enter a message or enter "/r" to receive new messages > ')
+                Timer(1.0, self.receive_data).start()
                 if message_input != "/r":
-                    message = self.serialize_data(self.get_time(), message_input)
+                    message = self.serialize_data(message_input)
                     self.sock.sendall(bytes(message, encoding="utf-8"))
                 else:
-                    self.receive_data()
                     self.print_data()
             except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError):
                 print("\n║ Server closed!")
@@ -60,11 +61,11 @@ class Client:
                 else:
                     exit()
 
-    def serialize_data(self, sending_time, message,):
+    def serialize_data(self, message,):
         message_dict = {
-            "message": message,
+            "message": message
             }
-        serialized_dict = dumps(message_dict)
+        serialized_dict = dumps(message_dict) + 'a3fd558d-9921-4176-8e9d-c0028642c549'
         return serialized_dict
 
     def reconnect(self,):
@@ -127,6 +128,3 @@ if __name__ == '__main__':
 
     sending = Thread(target=client.send_data())
     sending.start()
-
-    # receiving = Thread(target=client.receive_data())
-    # receiving.start()
