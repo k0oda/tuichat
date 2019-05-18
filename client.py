@@ -1,56 +1,105 @@
+from pychat_utils import ui, data_handler
 from socket import socket, timeout, gaierror
-from threading import Thread
-from os import system, name
-from datetime import datetime
-from json import dumps
-import sys
-import pychat_ui
+from threading import Thread, Timer
+from json import loads
+from tqdm import tqdm
+from time import sleep
 
 
 class Client:
-    def get_time(self,):
-        current_time = datetime.now().strftime('%Y-%m-%d | %H:%M:%S ')
-        return current_time
+    data_queue = []
+    guid = 'a3fd558d-9921-4176-8e9d-c0028642c549'
 
-    def clear_screen(self):
-        system("cls" if name == 'nt' else 'clear')
+    def main(self,):
+        logo = ui.Logo.get_logo('client')
+        print(logo)
 
-    def receive_data(self):
+        license = ui.License.get_license()
+        print(license)
+
+        host, port = self.connect()
+        data_handler.clear_screen()
+
+        print(logo)
+        print(license)
+
+        connection_info = ui.Connection_info.get_connection_info(host, port)
+        print(connection_info)
+
+        sending = Thread(target=self.send_data())
+        sending.start()
+
+    def receive_data(self,):
         while True:
             try:
-                data = self.sock.recv(1024).decode("utf-8")
-                print(data)
+                data = self.sock.recv(65536).decode('utf-8')
+                data = data.split('a3fd558d-9921-4176-8e9d-c0028642c549')
+                data = data[:-1]
+                for element in data:
+                    data_dict = loads(element)
+                    self.data_queue.append(f'{data_handler.get_time()} {data_dict["sender_address"]} - {data_dict["message"]}')
             except timeout:
                 break
 
-    def send_data(self):
+    def print_data(self,):
+        for data in self.data_queue:
+            print(data)
+        self.data_queue.clear()
+
+    def send_data(self,):
         while True:
             try:
                 message_input = input('Enter a message or enter "/r" to receive new messages > ')
-                if message_input.replace(" ", "") != "/r":
-                    message = dumps({
-                    "sending_time": self.get_time(),
-                    "message": message_input})
-                    size = sys.getsizeof(message)
-                    self.sock.sendall(bytes(str(size), encoding="utf-8"))
+                Timer(1.0, self.receive_data).start()
+                if message_input != "/r":
+                    message = data_handler.Client.serialize_client_data(message_input, self.guid)
                     self.sock.sendall(bytes(message, encoding="utf-8"))
                 else:
-                    self.receive_data()
-            except ConnectionResetError:
+                    self.print_data()
+            except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError):
                 print("\n║ Server closed!")
-                input("\n║ Press any key to exit...")
-                exit()
+                connect_again = input("Try to connect again? (Y/n) > ").lower().strip()
+                if connect_again == "y":
+                    respond = self.reconnect()
+                    if respond == True:
+                        print("║ Connection established!\n")
+                        continue
+                    else:
+                        print("\n║ Server did not respond!")
+                        input("Press any key to exit...")
+                        exit()
+                else:
+                    exit()
 
-    def connect(self):
+    def reconnect(self,):
+        i = 0
+        pbar = tqdm(total=5)
+        while i <= 5:
+            try:
+                self.sock.close()
+                self.sock = socket()
+                self.sock.connect((self.host, self.port))
+            except:
+                time.sleep(1)
+                i += 1
+                pbar.update(1)
+                continue
+            else:
+                pbar.close()
+                return True
+        else:
+            pbar.close()
+            return False
+
+    def connect(self, success_connect = False,):
         self.sock = socket()
-        success_connect = False
 
         while not success_connect:
             try:
-                host = input("║ Enter host: ").strip()
-                port = int(input("║ Enter port: ").strip())
-                msg_timeout = 1.0
-                self.sock.connect((host, port))
+                self.host = input("║ Enter host: ").strip()
+                self.port = int(input("║ Enter port: ").strip())
+                msg_timeout = 0.1
+                self.sock.connect((self.host, self.port))
                 self.sock.settimeout(msg_timeout)
             except gaierror:
                 print("║ Host not found!\n")
@@ -60,28 +109,9 @@ class Client:
                 print("║ Incorrect value!\n")
             else:
                 success_connect = True
-        return host, port
+        return self.host, self.port
 
 
-client = Client()
 if __name__ == '__main__':
-    logo = pychat_ui.logo.get_logo('client')
-    print(logo)
-
-    license = pychat_ui.license.get_license()
-    print(license)
-
-    host, port = client.connect()
-    client.clear_screen()
-
-    print(logo)
-    print(license)
-
-    connection_info = pychat_ui.connection_info.get_connection_info(host, port)
-    print(connection_info)
-
-    sending = Thread(target=client.send_data())
-    sending.start()
-
-    receiving = Thread(target=client.receive_data())
-    receiving.start()
+    client = Client()
+    client.main()
