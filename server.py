@@ -142,8 +142,12 @@ class Server:
             message = f'{data_handler.get_time()} {address} {data_dict["message"]}\n'
             self.save_log(message, 'a')
         message = data_handler.Server.serialize_server_data(data_dict['message'], address, self.uuid)
+        message_to_sender = data_handler.Server.serialize_server_data(data_dict['message'], '[You]', self.uuid)
         for client in self.connections_list:
-            client.sendall(bytes(message, encoding='utf-8'))
+            if client.getsockname()[0] != address:
+                client.sendall(bytes(message, encoding='utf-8'))
+            else:
+                client.sendall(bytes(message_to_sender, encoding='utf-8'))
 
     def run_server(self,):
         self.sock = socket()
