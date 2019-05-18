@@ -99,14 +99,14 @@ class Client:
                 msg_timeout = 0.1
                 self.sock.connect((self.host, self.port))
                 self.sock.settimeout(msg_timeout)
+                uuid = self.sock.recv(256).decode('utf-8')
             except gaierror:
                 print("║ Host not found!\n")
-            except ConnectionRefusedError:
+            except (ConnectionRefusedError, timeout):
                 print("║ Host rejected connection request!\n")
             except ValueError:
                 print("║ Incorrect value!\n")
             else:
-                uuid = self.sock.recv(256).decode('utf-8')
                 uuid = loads(uuid)
                 self.uuid = uuid['uuid']
                 success_connect = True

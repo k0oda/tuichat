@@ -114,8 +114,6 @@ class Server:
                 get_msg.join()
             else:
                 temp_connection, temp_address = self.sock.accept()
-                full_server_error = data_handler.Server.serialize_server_data(data_handler.get_time(), 'Server is full!', 'Server:')
-                temp_connection.sendall(bytes(dumps(full_server_error), encoding='utf-8'))
                 temp_connection.close()
 
     def get_data(self, conn, address,):
