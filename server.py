@@ -1,11 +1,11 @@
+import sys
+import pychat_ui
 from datetime import datetime
 from socket import socket
 from threading import Thread
 from urllib import request
 from json import loads, dumps, JSONDecodeError
 from os import system, name
-import sys
-import pychat_ui
 
 
 class Server:

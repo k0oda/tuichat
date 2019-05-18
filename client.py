@@ -1,3 +1,5 @@
+import sys
+import pychat_ui
 from socket import socket, timeout, gaierror
 from threading import Thread, Timer
 from os import system, name
@@ -5,8 +7,6 @@ from datetime import datetime
 from json import dumps, loads
 from tqdm import tqdm
 from time import sleep
-import sys
-import pychat_ui
 
 
 class Client:
