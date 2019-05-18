@@ -102,7 +102,7 @@ class Client:
                 uuid = self.sock.recv(256).decode('utf-8')
             except gaierror:
                 print("║ Host not found!\n")
-            except (ConnectionRefusedError, timeout):
+            except (ConnectionRefusedError, timeout, TimeoutError):
                 print("║ Host rejected connection request!\n")
             except ValueError:
                 print("║ Incorrect value!\n")
