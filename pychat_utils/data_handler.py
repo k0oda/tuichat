@@ -4,12 +4,12 @@ from json import dumps
 
 
 class Server():
-    def serialize_server_data(message, address, guid,):
+    def serialize_server_data(message, address, uuid,):
         message_dict = {
             'message': message,
             'sender_address': address
             }
-        serialized_dict = dumps(message_dict) + guid
+        serialized_dict = dumps(message_dict) + uuid
         return serialized_dict
 
     def two_choice(type,):
@@ -41,11 +41,11 @@ class Server():
 
 
 class Client():
-    def serialize_client_data(message, guid,):
+    def serialize_client_data(message, uuid,):
         message_dict = {
             "message": message
             }
-        serialized_dict = dumps(message_dict) + guid
+        serialized_dict = dumps(message_dict) + uuid
         return serialized_dict
 
 def clear_screen():
