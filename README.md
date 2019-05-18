@@ -17,8 +17,8 @@
 ## Table of Contents
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - **Installing**
-  - [Installing for users](#installing-1-for-users)
-  - [Installing for developers](#installing-2-for-developers)
+  - [Installing (№1) compiled files](#installing-1-compiled-files)
+  - [Installing (№2) using Git](#installing-2-using-git)
 - **User's manual**
   - [User's manual (host)](#users-manual-host-or-server-holder)
   - [User's manual (client)](#users-manual-client)
@@ -35,13 +35,13 @@
 
 > These instructions will get you a copy of the project up and running on your local machine for development. See deployment for notes on how to deploy the project on a live system.
 
-### Installing (№1) for users
+### Installing (№1) compiled files
 
 > Go to [releases](https://github.com/Kukree/PYChat/releases)
 
 > Download **zip** archive with **server.exe**, **client.exe** and **config.json**
 
-### Installing (№2) for developers
+### Installing (№2) using Git
 
 > Setup Git and type in git bash:
 
@@ -58,7 +58,7 @@ git clone https://github.com/Kukree/PYChat
 
 > **config.json**
 
-![config.json](http://g.recordit.co/8sy8U1CTrp.gif)
+![config.json](http://g.recordit.co/DURQ1eHjLC.gif)
 
 > **Note**: If you have problems with configuring, look at [configuration file description](#configuration-file-description)
 
@@ -79,7 +79,7 @@ git clone https://github.com/Kukree/PYChat
 
 > Enjoy :)
 
-![Client connecting](http://g.recordit.co/eLBMnKA9Kp.gif)
+![Client connecting](http://g.recordit.co/6wqVbs1IWB.gif)
 
 ---
 
