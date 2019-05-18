@@ -106,25 +106,24 @@ class Server:
             except (ConnectionResetError, ConnectionAbortedError):
                 conn.close()
                 self.connections_list.remove(conn)
-                print(f'{self.get_time()} {self.address[0]} disconnected!')
+                print(f'{self.get_time()} {address} disconnected!')
                 connection_aborted_msg = {'message': 'disconnected!'}
                 self.send_messages(connection_aborted_msg, address)
                 break
     
-    def serialize_data(self, sending_time, message, address,):
+    def serialize_data(self, message, address,):
         message_dict = {
-            'sending_time': sending_time,
             'message': message,
             'sender_address': address
             }
-        serialized_dict = dumps(message_dict)
+        serialized_dict = dumps(message_dict) + 'a3fd558d-9921-4176-8e9d-c0028642c549'
         return serialized_dict
 
     def send_messages(self, data_dict, address):
         if enable_log:
             message = f'{self.get_time()}, {data_dict["message"]}, {address}'
             self.save_log(message, 'a')
-        message = self.serialize_data(self.get_time(), data_dict['message'], address)
+        message = self.serialize_data(data_dict['message'], address)
         for client in self.connections_list:
             client.sendall(bytes(message, encoding='utf-8'))
 

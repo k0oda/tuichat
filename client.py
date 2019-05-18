@@ -10,6 +10,8 @@ import pychat_ui
 
 
 class Client:
+    data_list = []
+
     def clear_screen(self,):
         system("cls" if name == 'nt' else 'clear')
 
@@ -18,14 +20,20 @@ class Client:
         return current_time
 
     def receive_data(self,):
-        try:
-            data = self.sock.recv(2048).decode('utf-8')
+        while True:
+            try:
+                data = self.sock.recv(2048).decode('utf-8')
+                data = filter(None, data.split('a3fd558d-9921-4176-8e9d-c0028642c549'))
+                for element in data:
+                    data_dict = loads(element)
+                    self.data_list.append(f"{self.get_time()} {data_dict['sender_address']} - {data_dict['message']}")
+            except timeout:
+                break
+
+    def print_data(self,):
+        for data in self.data_list:
             print(data)
-            data_dict = loads(data)
-            data = f"{data_dict['sending_time']} {data_dict['sender_address']} - {data_dict['message']}"
-            print(data)
-        except timeout:
-            return
+        self.data_list = []
 
     def send_data(self,):
         while True:
@@ -34,11 +42,9 @@ class Client:
                 if message_input != "/r":
                     message = self.serialize_data(self.get_time(), message_input)
                     self.sock.sendall(bytes(message, encoding="utf-8"))
-                    # respond = self.sock.recv(1).decode('utf-8')
-                    # if not respond:
-                        # raise ConnectionResetError
                 else:
                     self.receive_data()
+                    self.print_data()
             except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError):
                 print("\n║ Server closed!")
                 connect_again = input("Try to connect again? (Y/n) > ").lower().strip()
@@ -56,7 +62,6 @@ class Client:
 
     def serialize_data(self, sending_time, message,):
         message_dict = {
-            "sending_time": sending_time,
             "message": message,
             }
         serialized_dict = dumps(message_dict)
@@ -89,7 +94,7 @@ class Client:
             try:
                 self.host = input("║ Enter host: ").strip()
                 self.port = int(input("║ Enter port: ").strip())
-                msg_timeout = 1.0
+                msg_timeout = 0.1
                 self.sock.connect((self.host, self.port))
                 self.sock.settimeout(msg_timeout)
             except gaierror:
