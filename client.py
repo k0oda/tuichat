@@ -98,8 +98,9 @@ class Client:
                 self.port = int(input("║ Enter port: ").strip())
                 msg_timeout = 0.1
                 self.sock.connect((self.host, self.port))
-                self.sock.settimeout(msg_timeout)
+                self.sock.settimeout(5)
                 uuid = self.sock.recv(256).decode('utf-8')
+                self.sock.settimeout(msg_timeout)
             except gaierror:
                 print("║ Host not found!\n")
             except (ConnectionRefusedError, timeout, TimeoutError):
