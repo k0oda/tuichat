@@ -34,10 +34,10 @@ class Server:
                 print('[ERROR] Error in config file! Check variables')
                 self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
 
-        logo = ui.Logo.get_logo('server') if enable_ui else ui.Logo.get_raw_logo('server')
+        logo = ui.Logo.get_logo('server') if self.enable_ui else ui.Logo.get_raw_logo('server')
         print(logo)
 
-        license = ui.License.get_license() if enable_ui else ui.License.get_raw_license()
+        license = ui.License.get_license() if self.enable_ui else ui.License.get_raw_license()
         print(license)
 
         external_ip, start_time = self.run_server()
