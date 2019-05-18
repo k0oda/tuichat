@@ -151,7 +151,7 @@ class Server:
         self.sock = socket()
         self.sock.bind(("", self.port))
         self.sock.listen(self.max_connections)
-        external_ip = request.urlopen('http://ident.me').read().decode('utf-8')
+        external_ip = request.urlopen('http://ifconfig.me/ip').read().decode('utf-8')
         start_time = data_handler.get_time()
         return external_ip, start_time
 
