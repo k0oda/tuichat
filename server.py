@@ -90,7 +90,7 @@ class Server:
             else:
                 temp_connection, temp_address = self.sock.accept()
                 full_server_error = self.serialize_data(self.get_time(), 'Server is full!', 'Server:')
-                temp_connection.sendall(bytes(dumps(full_server_error)))
+                temp_connection.sendall(bytes(dumps(full_server_error), encoding='utf-8'))
                 temp_connection.close()
 
     def get_data(self, conn, address,):
@@ -126,7 +126,6 @@ class Server:
             self.save_log(message, 'a')
         message = self.serialize_data(self.get_time(), data_dict['message'], address)
         for client in self.connections_list:
-
             client.sendall(bytes(message, encoding='utf-8'))
 
     def run_server(self, max_connections, port,):
