@@ -15,7 +15,7 @@
 
 ---
 ## Table of Contents
-- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Code of Conduct](documentation/CODE_OF_CONDUCT.md)
 - **Installing**
   - [Installing (№1) compiled files](#installing-1-compiled-files)
   - [Installing (№2) using Git](#installing-2-using-git)
@@ -131,4 +131,4 @@ See also the list of [contributors](https://github.com/Kukree/PYChat/contributor
 
 ## License
 
-This project is licensed under the GNU GPLv3 - see the [LICENSE](LICENSE) file for details
+This project is licensed under the GNU GPLv3 - see the [LICENSE](documentation/LICENSE) file for details
