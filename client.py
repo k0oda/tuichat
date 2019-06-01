@@ -12,6 +12,8 @@ class Client:
     data_queue = []
 
     def main(self,):
+        self.msg_max_symbols = 300
+
         logo = ui.Logo.get_logo('client')
         print(logo)
 
@@ -51,6 +53,10 @@ class Client:
             try:
                 message_input = input('Enter a message or enter "/r" to receive new messages > ')
                 Timer(1.0, self.receive_data).start()
+                if len(message_input) > self.msg_max_symbols:
+                    print(f'║ The number of symbols of your message is more than {self.msg_max_symbols}, using first {self.msg_max_symbols} symbols')
+                    message_input = message_input[:self.msg_max_symbols]
+
                 if message_input != "/r":
                     message = data_handler.Client.serialize_client_data(message_input, self.uuid)
                     self.sock.sendall(bytes(message, encoding="utf-8"))
