@@ -12,7 +12,7 @@ class Server():
         serialized_dict = dumps(message_dict) + uuid
         return serialized_dict
 
-    def two_choice(type,):
+    def configuration_input(type,):
         if type == 'max_connections':
             output = int(input('Enter value for limit of connections > ').strip())
             if output <= 0:

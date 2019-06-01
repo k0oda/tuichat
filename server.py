@@ -77,11 +77,11 @@ class Server:
             if answer == 'y':
                 try:
                     data_handler.clear_screen()
-                    max_connections_input = data_handler.Server.two_choice('max_connections')
-                    port_input = data_handler.Server.two_choice('port')
+                    max_connections_input = data_handler.Server.configuration_input('max_connections')
+                    port_input = data_handler.Server.configuration_input('port')
 
-                    enable_log_input = data_handler.Server.two_choice('enable_log')
-                    enable_ui_input = data_handler.Server.two_choice('enable_ui')
+                    enable_log_input = data_handler.Server.configuration_input('enable_log')
+                    enable_ui_input = data_handler.Server.configuration_input('enable_ui')
 
                     save_config_input = input('Save current settings to new configuration file? (Y/n) > ').lower().strip()
                     if save_config_input == 'y':
