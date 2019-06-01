@@ -13,28 +13,7 @@ class Server:
     uuid = str(uuid4())
 
     def main(self,):
-        try:
-            config = open('config.json').read()
-            config = loads(config)
-        except FileNotFoundError:
-            print('[ERROR] Configuration file not found!')
-            self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
-        except JSONDecodeError:
-            print('[ERROR] JSON decoding error!')
-            self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
-        else:
-            try:
-                self.max_connections = config[0]['max_connections']
-                if self.max_connections <= 0:
-                    raise ValueError
-                self.port = config[1]['port']
-                enable_log = config[2]['enable_log']
-                self.enable_log = bool(enable_log)
-                enable_ui = config[3]['enable_ui']
-                self.enable_ui = bool(enable_ui)
-            except (ValueError, KeyError):
-                print('[ERROR] Error in config file! Check variables')
-                self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
+        self.get_settings()
 
         logo = ui.Logo.get_logo('server') if self.enable_ui else ui.Logo.get_raw_logo('server')
         print(logo)
@@ -57,6 +36,28 @@ class Server:
 
         connection = Thread(target=self.accept_new_clients)
         connection.start()
+
+    def get_settings(self,):
+        try:
+            config = open('config.json').read()
+            config = loads(config)
+            self.max_connections = config[0]['max_connections']
+            if self.max_connections <= 0:
+                raise ValueError
+            self.port = config[1]['port']
+            enable_log = config[2]['enable_log']
+            self.enable_log = bool(enable_log)
+            enable_ui = config[3]['enable_ui']
+            self.enable_ui = bool(enable_ui)
+        except FileNotFoundError:
+            print('[ERROR] Configuration file not found!')
+            self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
+        except JSONDecodeError:
+            print('[ERROR] JSON decoding error!')
+            self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
+        except (ValueError, KeyError):
+            print('[ERROR] Error in config file! Check variables')
+            self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
 
     def save_log(self, data, open_type,):
         log_file = open('log.txt', open_type)
