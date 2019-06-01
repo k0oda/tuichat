@@ -122,7 +122,7 @@ class Server:
     def get_data(self, conn, address,):
         while True:
             try:
-                data = conn.recv(65536).decode('utf-8')
+                data = conn.recv(376).decode('utf-8')
                 data = data.split(self.uuid)
                 data = data[:-1]
                 for element in data:
