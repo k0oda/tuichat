@@ -1,4 +1,4 @@
-#!usr/bin/env python3
+#!/usr/bin/env python3
 
 from pychat_utils import ui, data_handler
 from socket import socket
