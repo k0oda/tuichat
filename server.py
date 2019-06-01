@@ -24,13 +24,13 @@ class Server:
         external_ip, start_time = self.run_server()
 
         raw_info_table = ui.Server_infotable.get_raw_infotable(start_time, self.port, self.max_connections, external_ip, self.enable_log, self.enable_ui)
-        if enable_ui:
+        if self.enable_ui:
             info_table = ui.Server_infotable.get_infotable(start_time, self.port, self.max_connections, external_ip, self.enable_log, self.enable_ui)
-            if enable_log:
+            if self.enable_log:
                 server.save_log(raw_info_table, 'a')
         else:
             info_table = raw_info_table
-            if enable_log:
+            if self.enable_log:
                 server.save_log(raw_info_table, 'a')
         print(info_table)
 
@@ -45,10 +45,10 @@ class Server:
             if self.max_connections <= 0:
                 raise ValueError
             self.port = config[1]['port']
-            enable_log = config[2]['enable_log']
-            self.enable_log = bool(enable_log)
-            enable_ui = config[3]['enable_ui']
-            self.enable_ui = bool(enable_ui)
+            self.enable_log = config[2]['enable_log']
+            self.enable_log = bool(self.enable_log)
+            self.enable_ui = config[3]['enable_ui']
+            self.enable_ui = bool(self.enable_ui)
         except FileNotFoundError:
             print('[ERROR] Configuration file not found!')
             self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
