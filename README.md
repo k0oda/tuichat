@@ -10,6 +10,7 @@
   <a href="https://github.com/Kukree/PYChat/issues"><img src="https://img.shields.io/github/issues-raw/Kukree/PYChat.svg" alt="Open issues"></a>
   <a href="https://github.com/Kukree/PYChat/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed-raw/Kukree/PYChat.svg" alt="Closed issues"></a>
   <a href="https://github.com/Kukree/PYChat/releases"><img src="https://img.shields.io/github/downloads/Kukree/PYChat/total.svg" alt="Downloads"></a>
+  <a href="https://www.codacy.com/app/Kukree/PYChat?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kukree/PYChat&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/533f950bb2a44c408198b24e66938d17" alt="Codacy Badge"></a>
 </p>
 <h3 align="center">A simple messaging program</h3>
 
