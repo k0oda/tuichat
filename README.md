@@ -17,14 +17,18 @@
 ---
 ## Table of Contents
 - [Code of Conduct](documentation/CODE_OF_CONDUCT.md)
+
 - **Installing**
   - [Installing (№1) compiled files](#installing-1-compiled-files)
   - [Installing (№2) using Git](#installing-2-using-git)
+  
 - **User's manual**
   - [User's manual (host)](#users-manual-host-or-server-holder)
   - [User's manual (client)](#users-manual-client)
+  
 - **Configuration**
   - [Configuration file description](#configuration-file-description)
+  
 - **Other info**
   - [Contributing](#contributing)
   - [Authors](#authors)
