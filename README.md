@@ -50,7 +50,7 @@
 
 > Setup Git and type in git bash:
 
-```
+```Bash
 git clone https://github.com/Kukree/PYChat
 ```
 
@@ -94,9 +94,9 @@ git clone https://github.com/Kukree/PYChat
 
 - `port` - Port to connect to your server, users will type it in client
 
-- `enable_log` [True/false] - Enable or disable saving logs of messages/connections or disconnections/other things, happened on server
+- `enable_log` (True/false) - Enable or disable saving logs of messages/connections or disconnections/other things, happened on server
 
-- `enable_ui` [True/false] - Enable or disable special UI symbols, like: logo, lines for highlighting system messages, borders around license block
+- `enable_ui` (True/false) - Enable or disable special UI symbols, like: logo, lines for highlighting system messages, borders around license block
 
 ## Contributing
 
@@ -105,10 +105,10 @@ git clone https://github.com/Kukree/PYChat
 ### Step 1
 
 - **Option 1**
-    - 🍴 Fork this repo!
+  - 🍴 Fork this repo!
 
 - **Option 2**
-    - 👯 Clone this repo to your local machine using `https://github.com/Kukree/PYChat.git`
+  - 👯 Clone this repo to your local machine using `https://github.com/Kukree/PYChat.git`
 
 ### Step 2
 
