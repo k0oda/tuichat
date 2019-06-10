@@ -10,20 +10,25 @@
   <a href="https://github.com/Kukree/PYChat/issues"><img src="https://img.shields.io/github/issues-raw/Kukree/PYChat.svg" alt="Open issues"></a>
   <a href="https://github.com/Kukree/PYChat/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed-raw/Kukree/PYChat.svg" alt="Closed issues"></a>
   <a href="https://github.com/Kukree/PYChat/releases"><img src="https://img.shields.io/github/downloads/Kukree/PYChat/total.svg" alt="Downloads"></a>
+  <a href="https://www.codacy.com/app/Kukree/PYChat?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kukree/PYChat&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/533f950bb2a44c408198b24e66938d17" alt="Codacy Badge"></a>
 </p>
 <h3 align="center">A simple messaging program</h3>
 
 ---
 ## Table of Contents
 - [Code of Conduct](documentation/CODE_OF_CONDUCT.md)
+
 - **Installing**
   - [Installing (№1) compiled files](#installing-1-compiled-files)
   - [Installing (№2) using Git](#installing-2-using-git)
+  
 - **User's manual**
   - [User's manual (host)](#users-manual-host-or-server-holder)
   - [User's manual (client)](#users-manual-client)
+  
 - **Configuration**
   - [Configuration file description](#configuration-file-description)
+  
 - **Other info**
   - [Contributing](#contributing)
   - [Authors](#authors)
@@ -45,7 +50,7 @@
 
 > Setup Git and type in git bash:
 
-```
+```Bash
 git clone https://github.com/Kukree/PYChat
 ```
 
@@ -89,9 +94,9 @@ git clone https://github.com/Kukree/PYChat
 
 - `port` - Port to connect to your server, users will type it in client
 
-- `enable_log` [True/false] - Enable or disable saving logs of messages/connections or disconnections/other things, happened on server
+- `enable_log` (True/false) - Enable or disable saving logs of messages/connections or disconnections/other things, happened on server
 
-- `enable_ui` [True/false] - Enable or disable special UI symbols, like: logo, lines for highlighting system messages, borders around license block
+- `enable_ui` (True/false) - Enable or disable special UI symbols, like: logo, lines for highlighting system messages, borders around license block
 
 ## Contributing
 
@@ -100,10 +105,10 @@ git clone https://github.com/Kukree/PYChat
 ### Step 1
 
 - **Option 1**
-    - 🍴 Fork this repo!
+  - 🍴 Fork this repo!
 
 - **Option 2**
-    - 👯 Clone this repo to your local machine using `https://github.com/Kukree/PYChat.git`
+  - 👯 Clone this repo to your local machine using `https://github.com/Kukree/PYChat.git`
 
 ### Step 2
 
