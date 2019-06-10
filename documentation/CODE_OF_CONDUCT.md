@@ -160,7 +160,7 @@ https://www.contributor-covenant.org/faq
   <a name="references--prefer-const"></a><a name="2.1"></a>
 - [2.1](#references--prefer-const) Use `CONST` for all of your references; avoid using `var`. Python does not have `constant` type, so you need to observe the convention using UPPERCASE for constants and never modify them.
 
-    > Why? This ensures that you can’t reassign your references, which can lead to bugs and difficult to comprehend code.
+  > Why? This ensures that you can’t reassign your references, which can lead to bugs and difficult to comprehend code.
 
     ```python
     # bad
@@ -374,9 +374,9 @@ https://www.contributor-covenant.org/faq
 ## Strings
 
   <a name="stringss--quotes"></a><a name="6.1"></a>
-  - [6.1](#strings--quotes) Use single quotes `''` for strings.
+- [6.1](#strings--quotes) Use single quotes `''` for strings.
 
-    > Why? Less escaping for double quote `""`, less bloat, and makes code more searchable.
+  > Why? Less escaping for double quote `""`, less bloat, and makes code more searchable.
 
     ```python
     # bad
@@ -396,9 +396,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="strings--line-length"></a><a name="6.2"></a>
-  - [6.2](#strings--line-length) Strings that cause the line to go over 79 characters should not be written across multiple lines using string concatenation.
+- [6.2](#strings--line-length) Strings that cause the line to go over 79 characters should not be written across multiple lines using string concatenation.
 
-    > Why? Broken strings are painful to work with and make code less searchable.
+  > Why? Broken strings are painful to work with and make code less searchable.
 
     ```python
     # bad
@@ -417,9 +417,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="template-literals"></a><a name="6.3"></a>
-  - [6.3](#template-literals) When programmatically building up strings, use template strings instead of concatenation.
+- [6.3](#template-literals) When programmatically building up strings, use template strings instead of concatenation.
 
-    > Why? Template strings give you a readable, concise syntax with proper newlines and string interpolation features.
+  > Why? Template strings give you a readable, concise syntax with proper newlines and string interpolation features.
 
     ```python
     # bad
@@ -439,7 +439,7 @@ https://www.contributor-covenant.org/faq
         return f'How are you, {name}?'
     ```
 
-    > For python < 3.6, convert f-string to template string by `format()`:
+  > For python < 3.6, convert f-string to template string by `format()`:
 
     ```python
     a = 1
@@ -459,12 +459,12 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="strings--eval"></a><a name="6.4"></a>
-  - [6.4](#strings--eval) Never use `eval()` on a string, it opens too many vulnerabilities.
+- [6.4](#strings--eval) Never use `eval()` on a string, it opens too many vulnerabilities.
 
   <a name="strings--escaping"></a><a name="6.5"></a>
-  - [6.5](#strings--escaping) Do not unnecessarily escape characters in strings.
+- [6.5](#strings--escaping) Do not unnecessarily escape characters in strings.
 
-    > Why? Backslashes harm readability, thus they should only be present when necessary.
+  > Why? Backslashes harm readability, thus they should only be present when necessary.
 
     ```python
     # bad
@@ -480,7 +480,7 @@ https://www.contributor-covenant.org/faq
 ## Functions
 
   <a name="default-parameters"></a><a name="7.1"></a>
-  - [7.1](#default-parameters) Use default parameter syntax rather than mutating function arguments.
+- [7.1](#default-parameters) Use default parameter syntax rather than mutating function arguments.
 
     ```python
     # really bad
@@ -503,9 +503,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="no-complex-default-parameters"></a><a name="7.2"></a>
-  - [7.2](#no-complex-default-parameters) Do not use complex data type as default parameter.
+- [7.2](#no-complex-default-parameters) Do not use complex data type as default parameter.
 
-    > Why? Variable to a complex type is a reference, and so the single instance will be modified.
+  > Why? Variable to a complex type is a reference, and so the single instance will be modified.
 
     ```python
     # bad
@@ -532,9 +532,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="functions--signature-no-spacing"></a><a name="7.3"></a>
-  - [7.3](#functions--signature-no-spacing) No spacing in a function signature.
+- [7.3](#functions--signature-no-spacing) No spacing in a function signature.
 
-    > Why? Consistency is good, and eases code search.
+  > Why? Consistency is good, and eases code search.
 
     ```python
     # bad
@@ -547,9 +547,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="functions--reassign-params"></a><a name="7.4"></a>
-  - [7.4](#functions--reassign-params) Never reassign parameters.
+- [7.4](#functions--reassign-params) Never reassign parameters.
 
-    > Why? Reassigning parameters can lead to unexpected behavior.
+  > Why? Reassigning parameters can lead to unexpected behavior.
 
     ```python
     # bad
@@ -571,7 +571,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="functions--signature-invocation-indentation"></a><a name="7.5"></a>
-  - [7.5](#functions--signature-invocation-indentation) Functions with multiline signatures, or invocations, should be indented just like every other multiline list in this guide: with each item on a line by itself, with a trailing comma on the last item.
+- [7.5](#functions--signature-invocation-indentation) Functions with multiline signatures, or invocations, should be indented just like every other multiline list in this guide: with each item on a line by itself, with a trailing comma on the last item.
 
     ```python
     # bad
@@ -602,9 +602,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="functions--call-param-name"></a><a name="7.6"></a>
-  - [7.6](#functions--call-param-name) Call function with parameters by specifying their names.
+- [7.6](#functions--call-param-name) Call function with parameters by specifying their names.
 
-    > Why? Clarity of parameters and future-proofing. When updating source code function parameters, it can be done reliably with minimal propagation.
+  > Why? Clarity of parameters and future-proofing. When updating source code function parameters, it can be done reliably with minimal propagation.
 
     ```python
     def move(x, y, roll=False):
@@ -622,9 +622,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="functions--clear-logic"></a><a name="7.7"></a>
-  - [7.7](#functions--clear-logic) Break down code logic into digestible chunks, and refactor a lot.
+- [7.7](#functions--clear-logic) Break down code logic into digestible chunks, and refactor a lot.
 
-    > Why? Other programmers and your future self will thank you for writing understandable code.
+  > Why? Other programmers and your future self will thank you for writing understandable code.
 
     ```python
     # bad - short but extremely confusing
@@ -650,9 +650,9 @@ https://www.contributor-covenant.org/faq
 ## Classes & Constructors
 
   <a name="classes--no-duplicate-members"></a><a name="8.1"></a>
-  - [8.1](#classes--no-duplicate-members) Avoid duplicate class members.
+- [8.1](#classes--no-duplicate-members) Avoid duplicate class members.
 
-    > Why? Duplicate class member declarations will silently prefer the last one - having duplicates is almost certainly a bug.
+  > Why? Duplicate class member declarations will silently prefer the last one - having duplicates is almost certainly a bug.
 
     ```python
     # bad
@@ -670,9 +670,9 @@ https://www.contributor-covenant.org/faq
 ## Modules
 
   <a name="modules--no-wildcard"></a><a name="9.1"></a>
-  - [9.1](#modules--no-wildcard) Do not use wildcard imports.
+- [9.1](#modules--no-wildcard) Do not use wildcard imports.
 
-    > Why? To prevent namespace pollution and conflicts, and to know which modules your variables or functions come from.
+  > Why? To prevent namespace pollution and conflicts, and to know which modules your variables or functions come from.
 
     ```python
     # bad
@@ -684,12 +684,12 @@ https://www.contributor-covenant.org/faq
 
 
   <a name="modules--no-unused"></a><a name="9.2"></a>
-  - [9.2](#modules--no-unused) Do not import unused modules.
-    > Why? Performance, reliability, containment. If a module breaks, your code that should be isolated from the module will break too. This causes more errors and makes it harder to debug.
+- [9.2](#modules--no-unused) Do not import unused modules.
+  > Why? Performance, reliability, containment. If a module breaks, your code that should be isolated from the module will break too. This causes more errors and makes it harder to debug.
 
   <a name="modules--no-duplicate-imports"></a><a name="9.3"></a>
-  - [9.3](#modules--no-duplicate-imports) Only import from a path in one place.
-    > Why? Having multiple lines that import from the same path can make code harder to maintain.
+- [9.3](#modules--no-duplicate-imports) Only import from a path in one place.
+  > Why? Having multiple lines that import from the same path can make code harder to maintain.
 
     ```python
     # bad
@@ -709,8 +709,8 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="modules--imports-first"></a><a name="9.4"></a>
-  - [9.4](#modules--imports-first) Put all `import`s above non-import statements.
-    > Why? Since `import`s are hoisted, keeping them all at the top prevents surprising behavior.
+- [9.4](#modules--imports-first) Put all `import`s above non-import statements.
+  > Why? Since `import`s are hoisted, keeping them all at the top prevents surprising behavior.
 
     ```python
     # bad
@@ -729,8 +729,8 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="modules--imports-sorted"></a><a name="9.5"></a>
-  - [9.5](#modules--imports-sorted) Sort the `import`s by `import` then `from`, and sort alphabetically.
-    > Why? `import` are often more generic that `from`; sort to ease manual inspection and for maintainability.
+- [9.5](#modules--imports-sorted) Sort the `import`s by `import` then `from`, and sort alphabetically.
+  > Why? `import` are often more generic that `from`; sort to ease manual inspection and for maintainability.
 
     ```python
     # bad
@@ -747,9 +747,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="modules--multiline-imports-over-newlines"></a><a name="9.6"></a>
-  - [9.6](#modules--multiline-imports-over-newlines) Multiline imports should be indented just like multiline list and dictionary literals.
+- [9.6](#modules--multiline-imports-over-newlines) Multiline imports should be indented just like multiline list and dictionary literals.
 
-    > Why? The parentheses follow the same indentation rules as every other bracket or brace block in the style guide, as do the trailing commas.
+  > Why? The parentheses follow the same indentation rules as every other bracket or brace block in the style guide, as do the trailing commas.
 
     ```python
     # bad
@@ -769,7 +769,7 @@ https://www.contributor-covenant.org/faq
 ## Variables
 
   <a name="variables--const"></a><a name="11.1"></a>
-  - [11.1](#variables--const) Use UPPERCASE to declare constants, and observe the convention - do not modify them in the program. Python has no `constant` type, so it must be observed manually.
+- [11.1](#variables--const) Use UPPERCASE to declare constants, and observe the convention - do not modify them in the program. Python has no `constant` type, so it must be observed manually.
 
     ```python
     # bad
@@ -782,9 +782,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="variables--one-const"></a><a name="11.2"></a>
-  - [11.2](#variables--one-const) Declare one constant per line.
+- [11.2](#variables--one-const) Declare one constant per line.
 
-    > Why? For clarity, and it’s easier to add/remove declarations this way, and with minimal git-diffs. You can also step through each declaration with the debugger, instead of jumping through all of them at once.
+  > Why? For clarity, and it’s easier to add/remove declarations this way, and with minimal git-diffs. You can also step through each declaration with the debugger, instead of jumping through all of them at once.
 
     ```python
     # bad
@@ -797,9 +797,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="variables--const-group"></a><a name="11.3"></a>
-  - [11.3](#variables--const-group) Group all your `CONST`s and then group all your `var`s.
+- [11.3](#variables--const-group) Group all your `CONST`s and then group all your `var`s.
 
-    > Why? For clarity and ease of reference. This is also helpful when later on you might need to assign a variable depending on one of the previous assigned variables.
+  > Why? For clarity and ease of reference. This is also helpful when later on you might need to assign a variable depending on one of the previous assigned variables.
 
     ```python
     # bad
@@ -817,9 +817,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="variables--define-where-used"></a><a name="11.4"></a>
-  - [11.4](#variables--define-where-used) Assign variables with the minimally sufficient scope at where you need them, but place them in a reasonable place.
+- [11.4](#variables--define-where-used) Assign variables with the minimally sufficient scope at where you need them, but place them in a reasonable place.
 
-    > Why? Prevent variable scope-leak and conflicts
+  > Why? Prevent variable scope-leak and conflicts
 
     ```python
     # bad - leak to sibling
@@ -856,9 +856,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="variables--underscore-unused"></a><a name="11.5"></a>
-  - [11.5](#variables--underscore-unused) Prepend underscore `_` when naming variables that are unused. Also a part of PEP8.
+- [11.5](#variables--underscore-unused) Prepend underscore `_` when naming variables that are unused. Also a part of PEP8.
 
-    > Why? To be aware of data usage and side effects.
+  > Why? To be aware of data usage and side effects.
 
     ```python
     # bad
@@ -886,9 +886,9 @@ https://www.contributor-covenant.org/faq
 
   
   <a name="comparison--concise"></a><a name="12.1"></a>
-  - [12.1](#comparison--concise) Use concise boolean conditionals, refactor long compound statements.
+- [12.1](#comparison--concise) Use concise boolean conditionals, refactor long compound statements.
 
-    > Why? Long boolean statements are hard to read and understand.
+  > Why? Long boolean statements are hard to read and understand.
 
     ```python
     # bad
@@ -907,9 +907,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="comparison--direct"></a><a name="12.2"></a>
-  - [12.2](#comparison--direct) Be direct with booleans, avoid unnecessary negations.
+- [12.2](#comparison--direct) Be direct with booleans, avoid unnecessary negations.
 
-    > Why? Negations are harder to understand and longer to write.
+  > Why? Negations are harder to understand and longer to write.
 
     ```python
     # bad
@@ -926,7 +926,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="comparison--shortcuts"></a><a name="12.3"></a>
-  - [12.3](#comparison--shortcuts) Use shortcuts for booleans, but explicit comparisons for strings and numbers.
+- [12.3](#comparison--shortcuts) Use shortcuts for booleans, but explicit comparisons for strings and numbers.
 
     ```python
     # bad
@@ -955,7 +955,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="comparison--nested-ternaries"></a><a name="12.4"></a>
-  - [12.4](#comparison--nested-ternaries) Ternaries should not be nested and generally be single line expressions.
+- [12.4](#comparison--nested-ternaries) Ternaries should not be nested and generally be single line expressions.
 
     ```python
     # bad
@@ -967,7 +967,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="comparison--unneeded-ternary"></a><a name="12.5"></a>
-  - [12.5](#comparison--unneeded-ternary) Avoid unneeded ternary statements.
+- [12.5](#comparison--unneeded-ternary) Avoid unneeded ternary statements.
 
     ```python
     # bad
@@ -986,7 +986,7 @@ https://www.contributor-covenant.org/faq
 ## Comments
 
   <a name="comments--multiline"></a><a name="13.1"></a>
-  - [13.1](#comments--multiline) Use `'''...'''` for multi-line comments.
+- [13.1](#comments--multiline) Use `'''...'''` for multi-line comments.
 
     ```python
     # bad
@@ -1015,7 +1015,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="comments--singleline"></a><a name="13.2"></a>
-  - [13.2](#comments--singleline) Use `#` for single line comments. Place single line comments on a newline above the subject of the comment. Put an empty line before the comment unless it’s on the first line of a block.
+- [13.2](#comments--singleline) Use `#` for single line comments. Place single line comments on a newline above the subject of the comment. Put an empty line before the comment unless it’s on the first line of a block.
 
     ```python
     # bad
@@ -1051,7 +1051,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="comments--spaces"></a><a name="13.3"></a>
-  - [13.3](#comments--spaces) Start all comments with a space to make it easier to read.
+- [13.3](#comments--spaces) Start all comments with a space to make it easier to read.
 
     ```python
     # bad
@@ -1064,7 +1064,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="comments--actionitems"></a><a name="13.4"></a>
-  - [13.4](#comments--actionitems) Prefixing your comments with `TODO` helps yourself and other developers be aware of items to revisit or implement. It keeps the issues visible and easy to find. These are different than regular comments because they are actionable.
+- [13.4](#comments--actionitems) Prefixing your comments with `TODO` helps yourself and other developers be aware of items to revisit or implement. It keeps the issues visible and easy to find. These are different than regular comments because they are actionable.
 
     ```python
     def complex_calculator():
@@ -1079,7 +1079,7 @@ https://www.contributor-covenant.org/faq
 ## Whitespace
 
   <a name="whitespace--spaces"></a><a name="14.1"></a>
-  - [14.1](#whitespace--spaces) Use soft tabs (space character) set to 4 spaces as per PEP8.
+- [14.1](#whitespace--spaces) Use soft tabs (space character) set to 4 spaces as per PEP8.
 
     ```python
     # bad
@@ -1096,7 +1096,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="whitespace--infix-ops"></a><a name="14.2"></a>
-  - [14.2](#whitespace--infix-ops) Set off operators with spaces.
+- [14.2](#whitespace--infix-ops) Set off operators with spaces.
 
     ```python
     # bad
@@ -1107,7 +1107,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="whitespace--newline-at-end"></a><a name="14.3"></a>
-  - [14.3](#whitespace--newline-at-end) End files with a single newline character.
+- [14.3](#whitespace--newline-at-end) End files with a single newline character.
 
     ```python
     # bad
@@ -1135,7 +1135,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="whitespace--after-blocks"></a><a name="14.4"></a>
-  - [14.4](#whitespace--after-blocks) Leave a blank line after blocks and before the next statement.
+- [14.4](#whitespace--after-blocks) Leave a blank line after blocks and before the next statement.
 
     ```python
     # bad
@@ -1166,7 +1166,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="whitespace--padded-blocks"></a><a name="14.5"></a>
-  - [14.5](#whitespace--padded-blocks) Do not pad your blocks with blank lines.
+- [14.5](#whitespace--padded-blocks) Do not pad your blocks with blank lines.
 
     ```python
     # bad
@@ -1193,7 +1193,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="whitespace--in-parens"></a><a name="14.6"></a>
-  - [14.6](#whitespace--in-parens) Do not add spaces inside parentheses.
+- [14.6](#whitespace--in-parens) Do not add spaces inside parentheses.
 
     ```python
     # bad
@@ -1214,7 +1214,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="whitespace--in-brackets"></a><a name="14.7"></a>
-  - [14.7](#whitespace--in-brackets) Do not add spaces inside brackets or braces.
+- [14.7](#whitespace--in-brackets) Do not add spaces inside brackets or braces.
 
     ```python
     # bad
@@ -1229,9 +1229,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="whitespace--max-len"></a><a name="14.8"></a>
-  - [14.8](#whitespace--max-len) Avoid having lines of code that are longer than 79 characters (including whitespace) as per PEP8. Note: per [above](#strings--line-length), long strings are exempt from this rule, and should not be broken up.
+- [14.8](#whitespace--max-len) Avoid having lines of code that are longer than 79 characters (including whitespace) as per PEP8. Note: per [above](#strings--line-length), long strings are exempt from this rule, and should not be broken up.
 
-    > Why? This ensures readability and maintainability.
+  > Why? This ensures readability and maintainability.
 
     ```python
     # bad
@@ -1261,7 +1261,7 @@ https://www.contributor-covenant.org/faq
 ## Commas
 
   <a name="commas--leading-trailing"></a><a name="15.1"></a>
-  - [15.1](#commas--leading-trailing) Leading commas: **Nope.**
+- [15.1](#commas--leading-trailing) Leading commas: **Nope.**
 
     ```python
     # bad
@@ -1296,9 +1296,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="commas--dangling"></a><a name="15.2"></a>
-  - [15.2](#commas--dangling) Additional trailing comma: **Yup.**
+- [15.2](#commas--dangling) Additional trailing comma: **Yup.**
 
-    > Why? This leads to cleaner git diffs during code change.
+  > Why? This leads to cleaner git diffs during code change.
 
     ```diff
     # bad - git diff without trailing comma
@@ -1393,7 +1393,7 @@ https://www.contributor-covenant.org/faq
 ## Naming Conventions
 
   <a name="naming--snake_case"></a><a name="16.1"></a>
-  - [16.1](#naming--snake_case) Use snake_case when naming variables, functions, and instances. Use it for file names too as they will be used in imports.
+- [16.1](#naming--snake_case) Use snake_case when naming variables, functions, and instances. Use it for file names too as they will be used in imports.
 
     ```python
     # bad
@@ -1410,7 +1410,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="naming--PascalCase"></a><a name="16.2"></a>
-  - [16.2](#naming--PascalCase) Use PascalCase only when naming classes.
+- [16.2](#naming--PascalCase) Use PascalCase only when naming classes.
 
     ```python
     # bad
@@ -1427,7 +1427,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="naming--descriptive"></a><a name="16.3"></a>
-  - [16.3](#naming--descriptive) Avoid single letter names. Use descriptive and meaningful names - tell what the function does, or what data type an object is. Use `description_object` instead of `object_description`.
+- [16.3](#naming--descriptive) Avoid single letter names. Use descriptive and meaningful names - tell what the function does, or what data type an object is. Use `description_object` instead of `object_description`.
 
     ```python
     # bad
@@ -1460,7 +1460,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="naming--distance"></a><a name="16.4"></a>
-  - [16.4](#naming--distance) Avoid using close naming to prevent typo and confusion.
+- [16.4](#naming--distance) Avoid using close naming to prevent typo and confusion.
 
     ```python
     # bad
@@ -1483,9 +1483,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="naming--singular"></a><a name="16.5"></a>
-  - [16.5](#naming--singular) Use singular or base words in naming; avoid using plural and instead append singular with the data type.
+- [16.5](#naming--singular) Use singular or base words in naming; avoid using plural and instead append singular with the data type.
 
-    > Why? To prevent inconsistencies and second-guesses when using variables. Also, plurals are 1 letter away from a typo, are hard to read, and are ambiguous on the data type.
+  > Why? To prevent inconsistencies and second-guesses when using variables. Also, plurals are 1 letter away from a typo, are hard to read, and are ambiguous on the data type.
 
     ```python
     # bad
@@ -1527,7 +1527,7 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="naming--singular-module"></a><a name="16.6"></a>
-  - [16.6](#naming--singular-module) Use singular naming for modules and source files.
+- [16.6](#naming--singular-module) Use singular naming for modules and source files.
 
     ```python
     # bad
@@ -1542,9 +1542,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="naming--abbreviations"></a><a name="16.7"></a>
-  - [16.7](#naming--abbreviations) Use abbreviations if they are clear and make for more readable and writable code.
+- [16.7](#naming--abbreviations) Use abbreviations if they are clear and make for more readable and writable code.
 
-    > Why? Names are for humans, so always make code readable and easy to spell.
+  > Why? Names are for humans, so always make code readable and easy to spell.
 
     ```python
     # bad
@@ -1557,9 +1557,9 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="naming--short"></a><a name="16.8"></a>
-  - [16.8](#naming--short) Use simple, concise names over long, explicit ones.
+- [16.8](#naming--short) Use simple, concise names over long, explicit ones.
 
-    > Why? Names are for humans to read, and should make the code clean.
+  > Why? Names are for humans to read, and should make the code clean.
 
     ```python
     # bad - explicit Java-style naming clutters code and harms readability
@@ -1579,17 +1579,17 @@ https://www.contributor-covenant.org/faq
 
 **Learning Python**
 
-  - [Learn Python in 10 minutes](https://www.stavros.io/tutorials/python/)
+- [Learn Python in 10 minutes](https://www.stavros.io/tutorials/python/)
 
 **Tools**
 
-  - Code Style Linters
-    - [Python PEP8 Autoformat](https://packagecontrol.io/packages/Python%20PEP8%20Autoformat)
+- Code Style Linters
+  - [Python PEP8 Autoformat](https://packagecontrol.io/packages/Python%20PEP8%20Autoformat)
     
 **[⬆ back to top](#table-of-contents)**
 
 ## Contributors
 
-  - [View Contributors](https://github.com/Kukree/PYChat/contributors)
+- [View Contributors](https://github.com/Kukree/PYChat/contributors)
   
   **[⬆ back to top](#table-of-contents)**
