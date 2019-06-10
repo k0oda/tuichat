@@ -15,24 +15,22 @@ class Server:
     def main(self,):
         self.get_settings()
 
-        logo = ui.Logo.get_logo('server') if self.enable_ui else ui.Logo.get_raw_logo('server')
+        logo_obj = ui.Logo('server')
+        logo = logo_obj.logo if self.enable_ui else logo_obj.raw_logo
         print(logo)
 
-        license = ui.License.get_license() if self.enable_ui else ui.License.get_raw_license()
-        print(license)
+        license_obj = ui.License()
+        copyright = license_obj.license if self.enable_ui else license_obj.raw_license
+        print(copyright)
 
         external_ip, start_time = self.run_server()
 
-        raw_info_table = ui.Server_infotable.get_raw_infotable(start_time, self.port, self.max_connections, external_ip, self.enable_log, self.enable_ui)
-        if self.enable_ui:
-            info_table = ui.Server_infotable.get_infotable(start_time, self.port, self.max_connections, external_ip, self.enable_log, self.enable_ui)
-            if self.enable_log:
-                server.save_log(raw_info_table, 'a')
-        else:
-            info_table = raw_info_table
-            if self.enable_log:
-                server.save_log(raw_info_table, 'a')
-        print(info_table)
+        server_infotable_obj = ui.ServerInfotable(start_time, self.port, self.max_connections, external_ip, self.enable_log, self.enable_ui)
+        raw_infotable = server_infotable_obj.raw_infotable
+        infotable = server_infotable_obj.infotable if self.enable_ui else raw_infotable
+        if self.enable_log:
+            server.save_log(raw_infotable, 'a')
+        print(infotable)
 
         connection = Thread(target=self.accept_new_clients)
         connection.start()
@@ -107,7 +105,6 @@ class Server:
             if len(self.connections_list) < self.max_connections:
                 connection, address = self.sock.accept()
                 self.connections_list.append(connection)
-                time = data_handler.get_time()
                 connection.send(bytes(dumps({'uuid': self.uuid}), encoding='utf-8'))
                 print(f'{data_handler.get_time()} {address[0]} connected!')
                 new_user_msg = {'message': 'connected!'}
@@ -116,7 +113,7 @@ class Server:
                 get_msg.start()
                 get_msg.join()
             else:
-                temp_connection, temp_address = self.sock.accept()
+                temp_connection, _temp_address = self.sock.accept()
                 temp_connection.close()
 
     def get_data(self, conn, address,):
@@ -142,6 +139,7 @@ class Server:
         if self.enable_log:
             message = f'{data_handler.get_time()} {address} {data_dict["message"]}\n'
             self.save_log(message, 'a')
+
         message = data_handler.Server.serialize_server_data(data_dict['message'], address, self.uuid)
         message_to_sender = data_handler.Server.serialize_server_data(data_dict['message'], '[You]', self.uuid)
         for client in self.connections_list:
