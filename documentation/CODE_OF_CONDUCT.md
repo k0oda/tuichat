@@ -11,24 +11,25 @@
   - [Scope](#scope)
   - [Enforcement](#enforcement)
   - [Attribution](#attribution)
+  
 - **Style Guide**
-    - [Types](#types)
-    - [References](#references)
-    - [Dictionaries](#dictionaries)
-    - [Lists](#lists)
-    - [Destructuring](#destructuring)
-    - [Strings](#strings)
-    - [Functions](#functions)
-    - [Classes & Constructors](#classes--constructors)
-    - [Modules](#modules)
-    - [Variables](#variables)
-    - [Comparison Operators & Equality](#comparison-operators--equality)
-    - [Comments](#comments)
-    - [Whitespace](#whitespace)
-    - [Commas](#commas)
-    - [Naming Conventions](#naming-conventions)
-    - [Resources](#resources)
-    - [Contributors](#contributors)
+  - [Types](#types)
+  - [References](#references)
+  - [Dictionaries](#dictionaries)
+  - [Lists](#lists)
+  - [Destructuring](#destructuring)
+  - [Strings](#strings)
+  - [Functions](#functions)
+  - [Classes & Constructors](#classes--constructors)
+  - [Modules](#modules)
+  - [Variables](#variables)
+  - [Comparison Operators & Equality](#comparison-operators--equality)
+  - [Comments](#comments)
+  - [Whitespace](#whitespace)
+  - [Commas](#commas)
+  - [Naming Conventions](#naming-conventions)
+  - [Resources](#resources)
+  - [Contributors](#contributors)
 
 ## Our Pledge
 
@@ -46,21 +47,21 @@ appearance, race, religion, or sexual identity and orientation.
 Examples of behavior that contributes to creating a positive environment
 include:
 
-* Using welcoming and inclusive language
-* Being respectful of differing viewpoints and experiences
-* Gracefully accepting constructive criticism
-* Focusing on what is best for the community
-* Showing empathy towards other community members
+- Using welcoming and inclusive language
+- Being respectful of differing viewpoints and experiences
+- Gracefully accepting constructive criticism
+- Focusing on what is best for the community
+- Showing empathy towards other community members
 
 Examples of unacceptable behavior by participants include:
 
-* The use of sexualized language or imagery and unwelcome sexual attention or
+- The use of sexualized language or imagery and unwelcome sexual attention or
  advances
-* Trolling, insulting/derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or electronic
+- Trolling, insulting/derogatory comments, and personal or political attacks
+- Public or private harassment
+- Publishing others' private information, such as a physical or electronic
  address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
+- Other conduct which could reasonably be considered inappropriate in a
  professional setting
  
  **[⬆ back to top](#table-of-contents)**
@@ -120,12 +121,12 @@ https://www.contributor-covenant.org/faq
 ## Types
 
   <a name="types--primitives"></a><a name="1.1"></a>
-  - [1.1](#types--primitives) **Primitives**: When you access a primitive type you work directly on its value.
+- [1.1](#types--primitives) **Primitives**: When you access a primitive type you work directly on its value.
 
-    - `string`
-    - `number`
-    - `boolean`
-    - `None`
+  - `string`
+  - `number`
+  - `boolean`
+  - `None`
 
     ```python
     foo = 1
@@ -137,11 +138,11 @@ https://www.contributor-covenant.org/faq
     ```
 
   <a name="types--complex"></a><a name="1.2"></a>
-  - [1.2](#types--complex)  **Complex**: When you access a complex type you work on a reference to its value.
+- [1.2](#types--complex)  **Complex**: When you access a complex type you work on a reference to its value.
 
-    - `dict`
-    - `list`
-    - `function`
+  - `dict`
+  - `list`
+  - `function`
 
     ```python
     foo = [1, 2]
@@ -157,7 +158,7 @@ https://www.contributor-covenant.org/faq
 ## References
 
   <a name="references--prefer-const"></a><a name="2.1"></a>
-  - [2.1](#references--prefer-const) Use `CONST` for all of your references; avoid using `var`. Python does not have `constant` type, so you need to observe the convention using UPPERCASE for constants and never modify them.
+- [2.1](#references--prefer-const) Use `CONST` for all of your references; avoid using `var`. Python does not have `constant` type, so you need to observe the convention using UPPERCASE for constants and never modify them.
 
     > Why? This ensures that you can’t reassign your references, which can lead to bugs and difficult to comprehend code.
 
@@ -176,7 +177,7 @@ https://www.contributor-covenant.org/faq
 ## Dictionaries
 
   <a name="dictionaries--literals"></a><a name="3.1"></a>
-  - [3.1](#dictionaries--literals) Use the literal syntax for dictionary creation.
+- [3.1](#dictionaries--literals) Use the literal syntax for dictionary creation.
 
     ```python
     # bad
