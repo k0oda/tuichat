@@ -62,8 +62,8 @@ under certain conditions.
 class ConnectionInfo():
     design_line = '║'
     def __init__(self, host, port):
-        self.connection_info = f"""║ Connection established!
-║ Host: {host}
-║ Port: {port}
+        self.connection_info = f"""{self.design_line} Connection established!
+{self.design_line} Host: {host}
+{self.design_line} Port: {port}
 """
-        self.raw_connection_info = self.connection_info.replace(design_line, '')
+        self.raw_connection_info = self.connection_info.replace(self.design_line, '')
