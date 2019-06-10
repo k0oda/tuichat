@@ -10,29 +10,33 @@ from time import sleep
 
 class Client:
     data_queue = []
+    freeze = False
 
     def main(self,):
         self.msg_max_symbols = 300
 
-        logo = ui.Logo.get_logo('client')
+        logo_obj = ui.Logo('client')
+        logo = logo_obj.logo
         print(logo)
 
-        license = ui.License.get_license()
-        print(license)
+        license_obj = ui.License()
+        copyright = license_obj.license
+        print(copyright)
 
         host, port = self.connect()
         data_handler.clear_screen()
         print(logo)
-        print(license)
+        print(copyright)
 
-        connection_info = ui.Connection_info.get_connection_info(host, port)
+        connection_info_obj = ui.ConnectionInfo(host, port)
+        connection_info = connection_info_obj.connection_info
         print(connection_info)
 
         sending = Thread(target=self.send_data())
         sending.start()
 
     def receive_data(self,):
-        while True:
+        while not self.freeze:
             try:
                 data = self.sock.recv(65536).decode('utf-8')
                 data = data.split(self.uuid)
@@ -64,11 +68,13 @@ class Client:
                     self.print_data()
             except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError):
                 print("\n║ Server closed!")
+                self.freeze = True
                 connect_again = input("Try to connect again? (Y/n) > ").lower().strip()
                 if connect_again == "y":
                     respond = self.reconnect()
                     if respond == True:
                         print("║ Connection established!\n")
+                        self.freeze = False
                         continue
                     else:
                         print("\n║ Server did not respond!")
@@ -85,8 +91,9 @@ class Client:
                 self.sock.close()
                 self.sock = socket()
                 self.sock.connect((self.host, self.port))
-            except:
-                time.sleep(1)
+            except Exception as ex:
+                print(f'An error occured: {ex}')
+                sleep(1)
                 i += 1
                 pbar.update(1)
                 continue
