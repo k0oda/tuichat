@@ -1,3 +1,6 @@
+from json import loads
+
+
 class ServerInfotable():
     design_line = '║'
     def __init__(self, time, port, max_connections, external_ip, enable_log, enable_ui):
@@ -18,45 +21,31 @@ class Logo():
         program_type = program_type.lower().replace(" ", "")
         if program_type == 'server':
             self.raw_logo = 'PYChat Server\n'
-            self.logo = '''
- _____ __ __ _____ _       _   
-|  _  |  |  |     | |_ ___| |_ 
-|   __|_   _|   --|   | .'|  _|
-|__|    |_| |_____|_|_|__,|_|                                                                                          
- ___ ___ ___ _ _ ___ ___       
-|_ -| -_|  _| | | -_|  _|      
-|___|___|_|  \_/|___|_|     
-'''
+            self.logo = open('pychat_utils/tui_elements/server_logo.txt').read()
         elif program_type == 'client':
             self.raw_logo = 'PYChat Client\n'
-            self.logo = '''
- _____ __ __ _____ _       _   
-|  _  |  |  |     | |_ ___| |_ 
-|   __|_   _|   --|   | .'|  _|
-|__|    |_| |_____|_|_|__,|_|                               
-     _ _         _             
- ___| |_|___ ___| |_           
-|  _| | | -_|   |  _|          
-|___|_|_|___|_|_|_|                  
-'''
+            self.logo = open('pychat_utils/tui_elements/client_logo.txt').read()
 
 
 class License():
     def __init__(self):
-        self.license = """
-┌────────────────────────────────────────────────────────────────┐
-│ PYChat  Copyright (C) 2019  Greenfield                         │
-│ This program comes with ABSOLUTELY NO WARRANTY.                │
-│ This is free software, and you are welcome to redistribute it  │
-│ under certain conditions.                                      │
-└────────────────────────────────────────────────────────────────┘
-"""
-        self.raw_license = """
-PYChat  Copyright (C) 2019  Greenfield
-This program comes with ABSOLUTELY NO WARRANTY.
-This is free software, and you are welcome to redistribute it
-under certain conditions.
-"""
+        self.raw_license = open('pychat_utils/tui_elements/copyright.txt').read()
+
+        lines = self.raw_license.splitlines()
+        max_lines = max(len(i) for i in lines)
+
+        symbols_file = open('pychat_utils/tui_elements/block_symbols.json').read()
+        symbols = loads(symbols_file)
+        license_top = f'{symbols[0]}' + f'{symbols[1]}' * (max_lines) + f'{symbols[2]}'
+        license_body = []
+        for line in lines:
+            line_separator = '' if line == lines[-1] else '\n'
+            license_line = ''.join(symbols[4] + line.center(max_lines) + symbols[4] + line_separator)
+            license_body.append(license_line)
+        license_body = ''.join(license_body)
+        license_bottom = f'{symbols[3]}' + f'{symbols[1]}' * (max_lines) + f'{symbols[5]}'
+
+        self.license = f'{license_top}\n{license_body}\n{license_bottom}'
 
 
 class ConnectionInfo():
