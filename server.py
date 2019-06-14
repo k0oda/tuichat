@@ -43,10 +43,10 @@ class Server:
             if self.max_connections <= 0:
                 raise ValueError
             self.port = config[1]['port']
-            self.enable_log = config[2]['enable_log']
-            self.enable_log = bool(self.enable_log)
-            self.enable_ui = config[3]['enable_ui']
-            self.enable_ui = bool(self.enable_ui)
+            enable_log_input = config[2]['enable_log']
+            self.enable_log = True if enable_log_input.lower() == 'true' else False
+            enable_ui_input = config[3]['enable_ui']
+            self.enable_ui = True if enable_ui_input.lower() == 'true' else False
         except FileNotFoundError:
             print('[ERROR] Configuration file not found!')
             self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
