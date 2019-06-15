@@ -12,7 +12,6 @@ class Server:
     def __init__(self,):
         self.connections = []
         self.uuid = str(uuid4())
-        self.exit = False
         self.nodes = [self.accept_new_clients]
 
     def main(self,):
