@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 
+from select import select
 from pychat_utils import ui, data_handler
 from socket import socket
-from threading import Thread
 from urllib import request
 from json import loads, dumps, JSONDecodeError
 from uuid import uuid4
 
 
 class Server:
-    connections_list = []
+    connections = []
     uuid = str(uuid4())
+    exit = False
 
     def main(self,):
         self.get_settings()
@@ -32,8 +33,16 @@ class Server:
             server.save_log(raw_infotable, 'a')
         print(infotable)
 
-        connection = Thread(target=self.accept_new_clients)
-        connection.start()
+        try:
+            while self.connections:
+                conns, _exc, _exc2 = select(self.connections, [], [])
+                self.accept_new_clients(conns)
+        except (KeyboardInterrupt, SystemExit):
+            print('\nShutting down PYChat server ...')
+            self.exit = True
+            print('PYChat server is down!')
+            input('Press any key to exit ...')
+            exit()
 
     def get_settings(self,):
         try:
@@ -100,24 +109,30 @@ class Server:
                 data_handler.clear_screen()
                 print('[ERROR] Unknown command!')
 
-    def accept_new_clients(self,):
-        while True:
-            if len(self.connections_list) < self.max_connections:
-                connection, address = self.sock.accept()
-                self.connections_list.append(connection)
-                connection.send(bytes(dumps({'uuid': self.uuid}), encoding='utf-8'))
-                print(f'{data_handler.get_time()} {address[0]} connected!')
-                new_user_msg = {'message': 'connected!'}
-                self.send_messages(new_user_msg, address[0])
-                get_msg = Thread(target=self.get_data, args=(connection, address[0]))
-                get_msg.start()
-                get_msg.join()
+    def accept_new_clients(self, conns):
+        for resource in conns:
+            if resource is self.sock:
+                if len(self.connections) < self.max_connections:
+                    connection, address = self.sock.accept()
+                    connection.setblocking(0)
+                    self.connections.append(connection)
+                    connection.send(bytes(dumps({'uuid': self.uuid}), encoding='utf-8'))
+                    print(f'{data_handler.get_time()} {address[0]} connected!')
+                    new_user_msg = {'message': 'connected!'}
+                    self.send_messages(new_user_msg, address[0])
+                else:
+                    temp_connection, _temp_address = self.sock.accept()
+                    temp_connection.close()
             else:
-                temp_connection, _temp_address = self.sock.accept()
-                temp_connection.close()
+                self.get_data(resource, resource.getsockname()[0])
 
     def get_data(self, conn, address,):
-        while True:
+        if self.exit:
+            server_closed_msg = {'message': 'closed!'}
+            self.send_messages(server_closed_msg, 'Server')
+            for client in self.connections:
+                client.close()
+        else:
             try:
                 data = conn.recv(376).decode('utf-8')
                 data = data.split(self.uuid)
@@ -129,11 +144,10 @@ class Server:
                     self.send_messages(data_dict, address)
             except (ConnectionResetError, ConnectionAbortedError):
                 conn.close()
-                self.connections_list.remove(conn)
+                self.connections.remove(conn)
                 print(f'{data_handler.get_time()} {address} disconnected!')
                 connection_aborted_msg = {'message': 'disconnected!'}
                 self.send_messages(connection_aborted_msg, address)
-                break
 
     def send_messages(self, data_dict, address):
         if self.enable_log:
@@ -142,14 +156,18 @@ class Server:
 
         message = data_handler.Server.serialize_server_data(data_dict['message'], address, self.uuid)
         message_to_sender = data_handler.Server.serialize_server_data(data_dict['message'], '[You]', self.uuid)
-        for client in self.connections_list:
-            if client.getsockname()[0] != address:
+        for client in self.connections:
+            if client is self.sock:
+                continue
+            elif client.getsockname()[0] != address:
                 client.sendall(bytes(message, encoding='utf-8'))
             else:
                 client.sendall(bytes(message_to_sender, encoding='utf-8'))
 
     def run_server(self,):
         self.sock = socket()
+        self.sock.setblocking(0)
+        self.connections.append(self.sock)
         self.sock.bind(("", self.port))
         self.sock.listen(self.max_connections)
         external_ip = request.urlopen('http://ifconfig.me/ip').read().decode('utf-8')
