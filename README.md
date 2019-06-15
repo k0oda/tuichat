@@ -20,15 +20,16 @@
 
 - **Installing**
   - [Installing (№1) compiled files](#installing-1-compiled-files)
-  - [Installing (№2) using Git](#installing-2-using-git)
-  
+  - [Installing (№2) from sources](#installing-2-from-sources)
+  - [Installing (№3) compilation guide](#installing-3-compilation-guide)
+
 - **User's manual**
   - [User's manual (host)](#users-manual-host-or-server-holder)
   - [User's manual (client)](#users-manual-client)
-  
+
 - **Configuration**
   - [Configuration file description](#configuration-file-description)
-  
+
 - **Other info**
   - [Contributing](#contributing)
   - [Authors](#authors)
@@ -44,9 +45,9 @@
 
 > Go to [releases](https://github.com/Kukree/PYChat/releases)
 
-> Download **zip** archive with **server.exe**, **client.exe** and **config.json**
+> Download **zip** archive with files and unzip it to any directory
 
-### Installing (№2) using Git
+### Installing (№2) from sources
 
 > Setup Git and type in git bash:
 
@@ -54,11 +55,25 @@
 git clone https://github.com/Kukree/PYChat
 ```
 
-> Install [**Python 3**](https://python.org) if not installed
+> Install [**Python 3**](https://python.org) if not installed or compile program files with your program to compile **(Pyinstaller, wheel, etc)**, the following lines are a program compilation guide
+
+### Installing (№3) compilation guide
+
+> Go to program directory
+
+> Run the following commands one at a time in your shell:
+
+```Bash
+pip install pyinstaller
+
+pyinstaller --onedir --onefile server.py
+
+pyinstaller --onedir --onefile client.py
+```
 
 ### User's manual (host, or server holder)
 
-#### Configure 
+#### Configure
 > Enter settings into **config.json** file and save it
 
 > **config.json**
@@ -69,7 +84,7 @@ git clone https://github.com/Kukree/PYChat
 
 > **Note 2**: If you don't want to use **config.json** you can delete it and configure program at startup
 
-#### Running 
+#### Running
 > Run **server.exe** (on info table you will see information about your server, running port, limit of connections, external IP address, TUI graphics, logging and others)
 
 > Give your **external IP address** to clients and **connection port**, written in server info table
@@ -126,7 +141,7 @@ git clone https://github.com/Kukree/PYChat
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/Kukree/PYChat/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/Kukree/PYChat/tags).
 
 ## Authors
 
