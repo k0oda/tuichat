@@ -12,6 +12,7 @@ class ServerInfotable():
 {self.design_line} External IP address: {external_ip}
 {self.design_line} Logging: {enable_log}
 {self.design_line} UI symbols: {enable_ui}
+{self.design_line} Press [CTRL + C] to stop server
 '''
         self.raw_infotable = self.infotable.replace(self.design_line, '')
 
