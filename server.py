@@ -9,9 +9,10 @@ from uuid import uuid4
 
 
 class Server:
-    connections = []
-    uuid = str(uuid4())
-    exit = False
+    def __init__(self,):
+        self.connections = []
+        self.uuid = str(uuid4())
+        self.exit = False
 
     def main(self,):
         self.get_settings()
