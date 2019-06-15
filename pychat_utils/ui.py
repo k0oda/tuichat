@@ -1,20 +1,24 @@
 from json import loads
+from string import Template
 
 
 class ServerInfotable():
     design_line = '║'
+
     def __init__(self, time, port, max_connections, external_ip, enable_log, enable_ui):
-        self.infotable = f'''
-{self.design_line} {time}
-{self.design_line} Server activated!
-{self.design_line} Port: {port}
-{self.design_line} Limit of connections: {max_connections}
-{self.design_line} External IP address: {external_ip}
-{self.design_line} Logging: {enable_log}
-{self.design_line} UI symbols: {enable_ui}
-{self.design_line} Press [CTRL + C] to stop server
-'''
-        self.raw_infotable = self.infotable.replace(self.design_line, '')
+        self.raw_infotable = open('pychat_utils/tui_elements/server_infotable_message.txt').read()
+        lines = self.raw_infotable.splitlines()
+
+        complete_lines = []
+        for line in lines:
+            line = f'{self.design_line} {line}\n'
+            complete_lines.append(line)
+
+        t = Template(''.join(complete_lines))
+        self.infotable = t.substitute(
+            time=time, port=port, max_connections=max_connections,
+            external_ip=external_ip, enable_log=enable_log, enable_ui=enable_ui
+        )
 
 
 class Logo():
@@ -51,6 +55,7 @@ class License():
 
 class ConnectionInfo():
     design_line = '║'
+
     def __init__(self, host, port):
         self.connection_info = f"""{self.design_line} Connection established!
 {self.design_line} Host: {host}
