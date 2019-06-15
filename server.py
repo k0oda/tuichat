@@ -13,6 +13,7 @@ class Server:
         self.connections = []
         self.uuid = str(uuid4())
         self.exit = False
+        self.nodes = [self.accept_new_clients]
 
     def main(self,):
         self.get_settings()
@@ -39,11 +40,10 @@ class Server:
                 conns, _exc, _exc2 = select(self.connections, [], [])
                 self.accept_new_clients(conns)
         except (KeyboardInterrupt, SystemExit):
-            print('\nShutting down PYChat server ...')
-            self.exit = True
-            print('PYChat server is down!')
-            input('Press any key to exit ...')
-            exit()
+            self.stop_server()
+        except Exception as ex:
+            print(ex)
+            self.stop_server()
 
     def get_settings(self,):
         try:
@@ -110,47 +110,56 @@ class Server:
                 data_handler.clear_screen()
                 print('[ERROR] Unknown command!')
 
-    def accept_new_clients(self, conns):
-        for resource in conns:
-            if resource is self.sock:
-                if len(self.connections) < self.max_connections:
-                    connection, address = self.sock.accept()
-                    connection.setblocking(0)
-                    self.connections.append(connection)
-                    connection.send(bytes(dumps({'uuid': self.uuid}), encoding='utf-8'))
-                    print(f'{data_handler.get_time()} {address[0]} connected!')
-                    new_user_msg = {'message': 'connected!'}
-                    self.send_messages(new_user_msg, address[0])
-                else:
-                    temp_connection, _temp_address = self.sock.accept()
-                    temp_connection.close()
+    def disconnect_clients(self,):
+        server_closed_msg = {'message': 'closed!'}
+        self.send_messages(server_closed_msg, 'Server')
+        for client in self.connections:
+            client.close()
+            self.connections.remove(client)
+
+    def accept_new_clients(self, conns=0, exit=False,):
+        if exit:
+            try:
+                self.disconnect_clients()
+            except Exception as ex:
+                return ex
             else:
-                self.get_data(resource, resource.getsockname()[0])
+                return True
+        else:
+            for resource in conns:
+                if resource is self.sock:
+                    if len(self.connections) < self.max_connections:
+                        connection, address = self.sock.accept()
+                        connection.setblocking(0)
+                        self.connections.append(connection)
+                        connection.send(bytes(dumps({'uuid': self.uuid}), encoding='utf-8'))
+                        print(f'{data_handler.get_time()} {address[0]} connected!')
+                        new_user_msg = {'message': 'connected!'}
+                        self.send_messages(new_user_msg, address[0])
+                    else:
+                        temp_connection, _temp_address = self.sock.accept()
+                        temp_connection.close()
+                else:
+                    self.get_data(resource, resource.getsockname()[0])
 
     def get_data(self, conn, address,):
-        if self.exit:
-            server_closed_msg = {'message': 'closed!'}
-            self.send_messages(server_closed_msg, 'Server')
-            for client in self.connections:
-                client.close()
-        else:
-            try:
-                data = conn.recv(376).decode('utf-8')
-                data = data.split(self.uuid)
-                data = data[:-1]
-                for element in data:
-                    data_dict = loads(element)
-                    data = f'{data_handler.get_time()} {address} - {data_dict["message"]}'
-                    print(data)
-                    self.send_messages(data_dict, address)
-            except (ConnectionResetError, ConnectionAbortedError):
-                conn.close()
-                self.connections.remove(conn)
-                print(f'{data_handler.get_time()} {address} disconnected!')
-                connection_aborted_msg = {'message': 'disconnected!'}
-                self.send_messages(connection_aborted_msg, address)
+        try:
+            data = conn.recv(376).decode('utf-8')
+            data = data.split(self.uuid)
+            data = data[:-1]
+            for element in data:
+                data_dict = loads(element)
+                data = f'{data_handler.get_time()} {address} - {data_dict["message"]}'
+                print(data)
+                self.send_messages(data_dict, address)
+        except (ConnectionResetError, ConnectionAbortedError):
+            conn.close()
+            self.connections.remove(conn)
+            print(f'{data_handler.get_time()} {address} disconnected!')
+            connection_aborted_msg = {'message': 'disconnected!'}
+            self.send_messages(connection_aborted_msg, address)
 
-    def send_messages(self, data_dict, address):
+    def send_messages(self, data_dict, address,):
         if self.enable_log:
             message = f'{data_handler.get_time()} {address} {data_dict["message"]}\n'
             self.save_log(message, 'a')
@@ -174,6 +183,18 @@ class Server:
         external_ip = request.urlopen('http://ifconfig.me/ip').read().decode('utf-8')
         start_time = data_handler.get_time()
         return external_ip, start_time
+
+    def stop_server(self,):
+        print('\nShutting down PYChat server ...')
+        for node in self.nodes:
+            response = node(exit=True)
+            if response is not True:
+                print(response)
+            else:
+                print(f'[{node.__name__}] node disabled! [OK]')
+        print('PYChat server is down!')
+        input('Press any key to exit ...')
+        exit()
 
 
 if __name__ == '__main__':
