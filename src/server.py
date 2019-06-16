@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from select import select
-from pychat_utils import ui, data_handler
+from tuichat_utils import ui, data_handler
 from socket import socket
 from urllib import request
 from json import loads, dumps, JSONDecodeError
