@@ -111,7 +111,7 @@ class Server:
 
     def disconnect_clients(self,):
         server_closed_msg = {'message': 'closed!'}
-        self.send_messages(server_closed_msg, 'Server')
+        self.send_messages(server_closed_msg, 'Server', 'server_closed')
         for client in self.connections:
             client.close()
             self.connections.remove(client)
@@ -134,7 +134,7 @@ class Server:
                         connection.send(bytes(dumps({'uuid': self.uuid}), encoding='utf-8'))
                         print(f'{data_handler.get_time()} {address[0]} connected!')
                         new_user_msg = {'message': 'connected!'}
-                        self.send_messages(new_user_msg, address[0])
+                        self.send_messages(new_user_msg, address[0], 'message')
                     else:
                         temp_connection, _temp_address = self.sock.accept()
                         temp_connection.close()
@@ -150,21 +150,24 @@ class Server:
                 data_dict = loads(element)
                 data = f'{data_handler.get_time()} {address} - {data_dict["message"]}'
                 print(data)
-                self.send_messages(data_dict, address)
+                if data_dict['type'] == 'disconnect':
+                    raise ConnectionResetError
+                else:
+                    self.send_messages(data_dict, address, 'message')
         except (ConnectionResetError, ConnectionAbortedError):
             conn.close()
             self.connections.remove(conn)
             print(f'{data_handler.get_time()} {address} disconnected!')
             connection_aborted_msg = {'message': 'disconnected!'}
-            self.send_messages(connection_aborted_msg, address)
+            self.send_messages(connection_aborted_msg, address, 'message')
 
-    def send_messages(self, data_dict, address,):
+    def send_messages(self, data_dict, address, type,):
         if self.enable_log:
             message = f'{data_handler.get_time()} {address} {data_dict["message"]}\n'
             self.save_log(message, 'a')
 
-        message = data_handler.Server.serialize_server_data(data_dict['message'], address, self.uuid)
-        message_to_sender = data_handler.Server.serialize_server_data(data_dict['message'], '[You]', self.uuid)
+        message = data_handler.Server.serialize_server_data(data_dict['message'], address, self.uuid, type)
+        message_to_sender = data_handler.Server.serialize_server_data(data_dict['message'], '[You]', self.uuid, type)
         for client in self.connections:
             if client is self.sock:
                 continue

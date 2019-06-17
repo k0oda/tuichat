@@ -48,7 +48,10 @@ class Client:
                 data = data[:-1]
                 for element in data:
                     data_dict = loads(element)
-                    self.data_queue.append(f'{data_handler.get_time()} {data_dict["sender_address"]} - {data_dict["message"]}')
+                    if data_dict['type'] == 'server_closed':
+                        raise ConnectionResetError
+                    else:
+                        self.data_queue.append(f'{data_handler.get_time()} {data_dict["sender_address"]} - {data_dict["message"]}')
             except timeout:
                 return
 
@@ -67,7 +70,7 @@ class Client:
                     message_input = message_input[:self.msg_max_symbols]
 
                 if message_input != "/r":
-                    message = data_handler.Client.serialize_client_data(message_input, self.uuid)
+                    message = data_handler.Client.serialize_client_data(message_input, self.uuid, 'message')
                     self.sock.sendall(bytes(message, encoding="utf-8"))
                 else:
                     self.print_data()
@@ -137,6 +140,9 @@ class Client:
     def disconnect(self,):
         print(f'\nDisconnecting from {self.sock.getsockname()[0]} ...')
         try:
+            self.freeze = True
+            message = data_handler.Client.serialize_client_data('', self.uuid, 'disconnect')
+            self.sock.sendall(bytes(message, encoding="utf-8"))
             self.sock.close()
         except Exception as ex:
             print(ex)
