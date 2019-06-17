@@ -9,8 +9,9 @@ from time import sleep
 
 
 class Client:
-    data_queue = []
-    freeze = False
+    def __init__(self,):
+        self.data_queue = []
+        self.freeze = False
 
     def main(self,):
         self.msg_max_symbols = 300
