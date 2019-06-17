@@ -1,5 +1,11 @@
 README.md
 setup.py
+src/__init__.py
+src/client.py
+src/server.py
+src/tuichat_utils/__init__.py
+src/tuichat_utils/data_handler.py
+src/tuichat_utils/ui.py
 tuichat.egg-info/PKG-INFO
 tuichat.egg-info/SOURCES.txt
 tuichat.egg-info/dependency_links.txt

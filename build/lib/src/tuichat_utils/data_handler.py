@@ -48,8 +48,10 @@ class Client():
         serialized_dict = dumps(message_dict) + uuid
         return serialized_dict
 
+
 def clear_screen():
     system('cls' if name == 'nt' else 'clear')
+
 
 def get_time():
     current_time = datetime.now().strftime('%Y-%m-%d | %H:%M:%S ')

@@ -6,7 +6,7 @@ class ServerInfotable():
     design_line = '║'
 
     def __init__(self, time, port, max_connections, external_ip, enable_log, enable_ui):
-        self.raw_infotable = open('pychat_utils/tui_elements/server_infotable_message.txt').read()
+        self.raw_infotable = open('tuichat_utils/tui_elements/server_infotable_message.txt').read()
         lines = self.raw_infotable.splitlines()
 
         complete_lines = []
@@ -25,21 +25,21 @@ class Logo():
     def __init__(self, program_type):
         program_type = program_type.lower().replace(" ", "")
         if program_type == 'server':
-            self.raw_logo = 'PYChat Server\n'
-            self.logo = open('pychat_utils/tui_elements/server_logo.txt').read()
+            self.raw_logo = 'TuiChat Server\n'
+            self.logo = open('tuichat_utils/tui_elements/server_logo.txt').read()
         elif program_type == 'client':
-            self.raw_logo = 'PYChat Client\n'
-            self.logo = open('pychat_utils/tui_elements/client_logo.txt').read()
+            self.raw_logo = 'TuiChat Client\n'
+            self.logo = open('tuichat_utils/tui_elements/client_logo.txt').read()
 
 
 class License():
     def __init__(self):
-        self.raw_license = open('pychat_utils/tui_elements/copyright.txt').read()
+        self.raw_license = open('tuichat_utils/tui_elements/copyright.txt').read()
 
         lines = self.raw_license.splitlines()
         max_lines = max(len(i) for i in lines)
 
-        symbols_file = open('pychat_utils/tui_elements/block_symbols.json').read()
+        symbols_file = open('tuichat_utils/tui_elements/block_symbols.json').read()
         symbols = loads(symbols_file)
         license_top = f'{symbols[0]}' + f'{symbols[1]}' * (max_lines) + f'{symbols[2]}'
         license_body = []
