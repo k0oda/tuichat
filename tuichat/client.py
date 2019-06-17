@@ -2,7 +2,7 @@
 
 from tuichat_utils import ui, data_handler
 from socket import socket, timeout, gaierror
-from threading import Thread, Timer
+from threading import Timer
 from json import loads
 from tqdm import tqdm
 from time import sleep
@@ -32,20 +32,19 @@ class Client:
         connection_info = connection_info_obj.connection_info
         print(connection_info)
 
-        sending = Thread(target=self.send_data())
-        sending.start()
+        self.send_data()
 
     def receive_data(self,):
-        while not self.freeze:
+        if not self.freeze:
             try:
-                data = self.sock.recv(65536).decode('utf-8')
+                data = self.sock.recv(1128).decode('utf-8')
                 data = data.split(self.uuid)
                 data = data[:-1]
                 for element in data:
                     data_dict = loads(element)
                     self.data_queue.append(f'{data_handler.get_time()} {data_dict["sender_address"]} - {data_dict["message"]}')
             except timeout:
-                break
+                return
 
     def print_data(self,):
         for data in self.data_queue:
@@ -72,7 +71,7 @@ class Client:
                 connect_again = input("Try to connect again? (Y/n) > ").lower().strip()
                 if connect_again == "y":
                     respond = self.reconnect()
-                    if respond == True:
+                    if respond is True:
                         print("║ Connection established!\n")
                         self.freeze = False
                         continue
@@ -104,7 +103,7 @@ class Client:
             pbar.close()
             return False
 
-    def connect(self, success_connect = False,):
+    def connect(self, success_connect=False,):
         self.sock = socket()
 
         while not success_connect:
@@ -113,6 +112,7 @@ class Client:
                 self.port = int(input("║ Enter port: ").strip())
                 msg_timeout = 0.1
                 self.sock.connect((self.host, self.port))
+                self.sock.setblocking(0)
                 self.sock.settimeout(5)
                 uuid = self.sock.recv(256).decode('utf-8')
                 self.sock.settimeout(msg_timeout)
