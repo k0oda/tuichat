@@ -99,7 +99,7 @@ pyinstaller --onedir --onefile client.py
 
 > Enjoy :)
 
-![Client connecting](http://g.recordit.co/6wqVbs1IWB.gif)
+![Client connecting](https://imgur.com/sjOu65c.gif)
 
 ---
 
