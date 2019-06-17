@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 
-from pychat_utils import ui, data_handler
+from tuichat_utils import ui, data_handler
 from socket import socket, timeout, gaierror
-from threading import Thread, Timer
+from threading import Timer
 from json import loads
 from tqdm import tqdm
 from time import sleep
 
 
 class Client:
-    data_queue = []
-    freeze = False
+    def __init__(self,):
+        self.data_queue = []
+        self.freeze = False
+        self.msg_timeout = 0.1
 
     def main(self,):
         self.msg_max_symbols = 300
@@ -32,20 +34,24 @@ class Client:
         connection_info = connection_info_obj.connection_info
         print(connection_info)
 
-        sending = Thread(target=self.send_data())
-        sending.start()
+        self.start_client()
 
     def receive_data(self,):
-        while not self.freeze:
+        if not self.freeze:
             try:
-                data = self.sock.recv(65536).decode('utf-8')
+                data = self.sock.recv(1128).decode('utf-8')
                 data = data.split(self.uuid)
                 data = data[:-1]
                 for element in data:
                     data_dict = loads(element)
-                    self.data_queue.append(f'{data_handler.get_time()} {data_dict["sender_address"]} - {data_dict["message"]}')
+                    if data_dict['type'] == 'server_closed':
+                        raise ConnectionResetError
+                    else:
+                        self.data_queue.append(f'{data_handler.get_time()} {data_dict["sender_address"]} - {data_dict["message"]}')
             except timeout:
-                break
+                return
+            except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError):
+                self.handle_server_closed()
 
     def print_data(self,):
         for data in self.data_queue:
@@ -53,35 +59,51 @@ class Client:
         self.data_queue.clear()
 
     def send_data(self,):
-        while True:
+        while not self.freeze:
             try:
-                message_input = input('Enter a message or enter "/r" to receive new messages > ')
+                self.receive_data()
                 Timer(1.0, self.receive_data).start()
+                if self.data_queue:
+                    prompt = f'You have [{len(self.data_queue) + 1}] messages. Enter a message or enter "/r" to print new messages > '
+                else:
+                    prompt = 'Enter a message > '
+                message_input = input(prompt)
                 if len(message_input) > self.msg_max_symbols:
                     print(f'║ The number of symbols of your message is more than {self.msg_max_symbols}, using first {self.msg_max_symbols} symbols')
                     message_input = message_input[:self.msg_max_symbols]
-
                 if message_input != "/r":
-                    message = data_handler.Client.serialize_client_data(message_input, self.uuid)
+                    message = data_handler.Client.serialize_client_data(message_input, self.uuid, 'message')
                     self.sock.sendall(bytes(message, encoding="utf-8"))
                 else:
                     self.print_data()
             except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError):
-                print("\n║ Server closed!")
-                self.freeze = True
-                connect_again = input("Try to connect again? (Y/n) > ").lower().strip()
-                if connect_again == "y":
-                    respond = self.reconnect()
-                    if respond == True:
-                        print("║ Connection established!\n")
-                        self.freeze = False
-                        continue
-                    else:
-                        print("\n║ Server did not respond!")
-                        input("Press any key to exit...")
-                        exit()
-                else:
-                    exit()
+                self.handle_server_closed()
+
+    def start_client(self,):
+        try:
+            self.send_data()
+        except (KeyboardInterrupt, SystemExit):
+            self.disconnect()
+        except Exception as ex:
+            print(ex)
+            self.disconnect()
+
+    def handle_server_closed(self,):
+        print("\n║ Server closed!")
+        self.freeze = True
+        connect_again = input("Try to connect again? (Y/n) > ").lower().strip()
+        if connect_again == "y":
+            respond = self.reconnect()
+            if respond is True:
+                print("║ Connection established!\n")
+                self.freeze = False
+                self.start_client()
+            else:
+                print("\n║ Server did not respond!")
+                input("Press any key to exit...")
+                exit()
+        else:
+            exit()
 
     def reconnect(self,):
         i = 0
@@ -98,24 +120,33 @@ class Client:
                 pbar.update(1)
                 continue
             else:
+                self.setup_connection()
                 pbar.close()
                 return True
         else:
             pbar.close()
             return False
 
-    def connect(self, success_connect = False,):
+    def receive_uuid(self,):
+        uuid = self.sock.recv(256).decode('utf-8')
+        uuid = loads(uuid)
+        self.uuid = uuid['uuid']
+
+    def setup_connection(self,):
+        self.sock.setblocking(0)
+        self.sock.settimeout(5)
+        self.receive_uuid()
+        self.sock.settimeout(self.msg_timeout)
+
+    def connect(self, success_connect=False,):
         self.sock = socket()
 
         while not success_connect:
             try:
                 self.host = input("║ Enter host: ").strip()
                 self.port = int(input("║ Enter port: ").strip())
-                msg_timeout = 0.1
                 self.sock.connect((self.host, self.port))
-                self.sock.settimeout(5)
-                uuid = self.sock.recv(256).decode('utf-8')
-                self.sock.settimeout(msg_timeout)
+                self.setup_connection()
             except gaierror:
                 print("║ Host not found!\n")
             except (ConnectionRefusedError, timeout, TimeoutError):
@@ -123,10 +154,22 @@ class Client:
             except ValueError:
                 print("║ Incorrect value!\n")
             else:
-                uuid = loads(uuid)
-                self.uuid = uuid['uuid']
                 success_connect = True
         return self.host, self.port
+
+    def disconnect(self,):
+        print(f'\nDisconnecting from {self.sock.getsockname()[0]} ...')
+        try:
+            self.freeze = True
+            message = data_handler.Client.serialize_client_data('', self.uuid, 'disconnect')
+            self.sock.sendall(bytes(message, encoding="utf-8"))
+            self.sock.close()
+        except Exception as ex:
+            print(ex)
+        else:
+            print('Successfully disconnected from server! [OK]')
+            input('Press any key to exit ...')
+            exit()
 
 
 if __name__ == '__main__':

@@ -4,10 +4,11 @@ from json import dumps
 
 
 class Server():
-    def serialize_server_data(message, address, uuid,):
+    def serialize_server_data(message, address, uuid, type):
         message_dict = {
             'message': message,
-            'sender_address': address
+            'sender_address': address,
+            'type': type
             }
         serialized_dict = dumps(message_dict) + uuid
         return serialized_dict
@@ -41,9 +42,10 @@ class Server():
 
 
 class Client():
-    def serialize_client_data(message, uuid,):
+    def serialize_client_data(message, uuid, type):
         message_dict = {
-            "message": message
+            'message': message,
+            'type': type
             }
         serialized_dict = dumps(message_dict) + uuid
         return serialized_dict
