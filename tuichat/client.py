@@ -61,8 +61,13 @@ class Client:
     def send_data(self,):
         while not self.freeze:
             try:
+                self.receive_data()
                 Timer(1.0, self.receive_data).start()
-                message_input = input('Enter a message or enter "/r" to receive new messages > ')
+                if self.data_queue:
+                    prompt = f'You have [{len(self.data_queue) + 1}] messages. Enter a message or enter "/r" to print new messages > '
+                else:
+                    prompt = 'Enter a message > '
+                message_input = input(prompt)
                 if len(message_input) > self.msg_max_symbols:
                     print(f'║ The number of symbols of your message is more than {self.msg_max_symbols}, using first {self.msg_max_symbols} symbols')
                     message_input = message_input[:self.msg_max_symbols]
