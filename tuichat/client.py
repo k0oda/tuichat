@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from pychat_utils import ui, data_handler
+from tuichat_utils import ui, data_handler
 from socket import socket, timeout, gaierror
 from threading import Thread, Timer
 from json import loads
