@@ -32,7 +32,13 @@ class Client:
         connection_info = connection_info_obj.connection_info
         print(connection_info)
 
-        self.send_data()
+        try:
+            self.send_data()
+        except (KeyboardInterrupt, SystemExit):
+            self.disconnect()
+        except Exception as ex:
+            print(ex)
+            self.disconnect()
 
     def receive_data(self,):
         if not self.freeze:
@@ -127,6 +133,17 @@ class Client:
                 self.uuid = uuid['uuid']
                 success_connect = True
         return self.host, self.port
+
+    def disconnect(self,):
+        print(f'\nDisconnecting from {self.sock.getsockname()[0]} ...')
+        try:
+            self.sock.close()
+        except Exception as ex:
+            print(ex)
+        else:
+            print('Successfully disconnected from server! [OK]')
+            input('Press any key to exit ...')
+            exit()
 
 
 if __name__ == '__main__':
