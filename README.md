@@ -20,8 +20,9 @@
 
 - **Installing**
   - [Installing (№1) compiled files](#installing-1-compiled-files)
-  - [Installing (№2) from sources](#installing-2-from-sources)
-  - [Installing (№3) compilation guide](#installing-3-compilation-guide)
+  - [Installing (№2) pip](#installing-2-pip)
+  - [Installing (№3) from sources](#installing-3-from-sources)
+  - [Installing (№4) compilation guide](#installing-4-compilation-guide)
 
 - **User's manual**
   - [User's manual (host)](#users-manual-host-or-server-holder)
@@ -45,9 +46,17 @@
 
 > Go to [releases](https://github.com/Kukree/tuichat/releases)
 
-> Download **zip** archive with files and unzip it to any directory
+> Download archive with files and unzip it to any directory
 
-### Installing (№2) from sources
+### Installing (№2) pip
+
+> Run this command in your shell:
+
+```Bash
+pip install tuichat
+```
+
+### Installing (№3) from sources
 
 > Setup Git and type in git bash:
 
@@ -57,7 +66,7 @@ git clone https://github.com/Kukree/tuichat
 
 > Install [**Python 3**](https://python.org) if not installed or compile program files with your program to compile **(Pyinstaller, wheel, etc)**, the following lines are a program compilation guide
 
-### Installing (№3) compilation guide
+### Installing (№4) compilation guide
 
 > Go to program directory
 
