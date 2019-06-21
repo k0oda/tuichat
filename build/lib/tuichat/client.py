@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from tuichat_utils import ui, data_handler
 from socket import socket, timeout, gaierror
+from tuichat import tuichat_utils
 from threading import Timer
 from json import loads
 from tqdm import tqdm
@@ -13,24 +13,23 @@ class Client:
         self.data_queue = []
         self.freeze = False
         self.msg_timeout = 0.1
-
-    def main(self,):
         self.msg_max_symbols = 300
 
-        logo_obj = ui.Logo('client')
+    def main(self,):
+        logo_obj = tuichat_utils.ui.Logo('client')
         logo = logo_obj.logo
         print(logo)
 
-        license_obj = ui.License()
+        license_obj = tuichat_utils.ui.License()
         copyright = license_obj.license
         print(copyright)
 
         host, port = self.connect()
-        data_handler.clear_screen()
+        tuichat_utils.data_handler.clear_screen()
         print(logo)
         print(copyright)
 
-        connection_info_obj = ui.ConnectionInfo(host, port)
+        connection_info_obj = tuichat_utils.ui.ConnectionInfo(host, port)
         connection_info = connection_info_obj.connection_info
         print(connection_info)
 
@@ -47,7 +46,7 @@ class Client:
                     if data_dict['type'] == 'server_closed':
                         raise ConnectionResetError
                     else:
-                        self.data_queue.append(f'{data_handler.get_time()} {data_dict["sender_address"]} - {data_dict["message"]}')
+                        self.data_queue.append(f'{tuichat_utils.data_handler.get_time()} {data_dict["sender_address"]} - {data_dict["message"]}')
             except timeout:
                 return
             except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError):
@@ -72,7 +71,7 @@ class Client:
                     print(f'║ The number of symbols of your message is more than {self.msg_max_symbols}, using first {self.msg_max_symbols} symbols')
                     message_input = message_input[:self.msg_max_symbols]
                 if message_input != "/r":
-                    message = data_handler.Client.serialize_client_data(message_input, self.uuid, 'message')
+                    message = tuichat_utils.data_handler.Client.serialize_client_data(message_input, self.uuid, 'message')
                     self.sock.sendall(bytes(message, encoding="utf-8"))
                 else:
                     self.print_data()
@@ -161,7 +160,7 @@ class Client:
         print(f'\nDisconnecting from {self.sock.getsockname()[0]} ...')
         try:
             self.freeze = True
-            message = data_handler.Client.serialize_client_data('', self.uuid, 'disconnect')
+            message = tuichat_utils.data_handler.Client.serialize_client_data('', self.uuid, 'disconnect')
             self.sock.sendall(bytes(message, encoding="utf-8"))
             self.sock.close()
         except Exception as ex:
