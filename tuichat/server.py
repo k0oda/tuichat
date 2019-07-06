@@ -188,14 +188,14 @@ class Server:
         return external_ip, start_time
 
     def stop_server(self,):
-        print('\nShutting down PYChat server ...')
+        print('\nShutting down TuiChat server ...')
         for node in self.nodes:
             response = node(exit=True)
             if response is not True:
                 print(response)
             else:
                 print(f'[{node.__name__}] node disabled! [OK]')
-        print('PYChat server is down!')
+        print('TuiChat server is down!')
         input('Press any key to exit ...')
         exit()
 
