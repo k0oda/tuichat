@@ -87,7 +87,7 @@ pyinstaller --onedir --onefile client.py
 
 > **config.json**
 
-[![config.json](https://asciinema.org/a/8OZjMTOqGgnoEpaoGGMiOi4m0.svg)](https://asciinema.org/a/8OZjMTOqGgnoEpaoGGMiOi4m0)
+![Configuring server](https://imgur.com/wlny9ET.gif)
 
 > **Note**: If you have problems with configuring, look at [configuration file description](#configuration-file-description)
 
@@ -108,7 +108,7 @@ pyinstaller --onedir --onefile client.py
 
 > Enjoy :)
 
-[![Client connecting](https://asciinema.org/a/VdGWMlUXOnrgW1HGNGPgTOKDd.svg)](https://asciinema.org/a/VdGWMlUXOnrgW1HGNGPgTOKDd)
+![Client connecting](https://imgur.com/OtCQgVH.gif)
 
 ---
 
