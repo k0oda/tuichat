@@ -7,7 +7,7 @@ from . import tui_elements
 class ServerInfotable():
     design_line = '║'
 
-    def __init__(self, time, port, max_connections, external_ip, enable_log, enable_ui):
+    def __init__(self, time, port, max_connections, external_ip, enable_log, enable_ui, version):
         self.raw_infotable = pkg_resources.read_text(tui_elements, 'server_infotable_message.txt')
         lines = self.raw_infotable.splitlines()
 
@@ -19,7 +19,8 @@ class ServerInfotable():
         t = Template(''.join(complete_lines))
         self.infotable = t.substitute(
             time=time, port=port, max_connections=max_connections,
-            external_ip=external_ip, enable_log=enable_log, enable_ui=enable_ui
+            external_ip=external_ip, enable_log=enable_log, enable_ui=enable_ui,
+            version=version
         )
 
 
