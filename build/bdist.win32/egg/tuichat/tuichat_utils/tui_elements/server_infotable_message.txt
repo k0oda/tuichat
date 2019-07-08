@@ -1,8 +1,0 @@
-$time
-Server activated!
-Port: $port
-Limit of connections: $max_connections
-External IP address: $external_ip
-Logging: $enable_log
-UI symbols: $enable_ui
-Press [CTRL + C] to stop server
