@@ -76,8 +76,8 @@ class Server:
     def save_config(self, max_connections, port, enable_log, enable_ui,):
         parameters_list = [{'max_connections': max_connections}, {'port': port}, {'enable_log': enable_log}, {'enable_ui': enable_ui}]
         config = open('config.json', 'w')
-        parametersJSON = dumps(parameters_list)
-        config.write(parametersJSON)
+        parameters_json = dumps(parameters_list)
+        config.write(parameters_json)
 
     def configure(self,):
         while True:
