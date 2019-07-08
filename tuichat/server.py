@@ -48,24 +48,25 @@ class Server:
 
     def get_settings(self,):
         try:
-            config = pkg_resources.read_text(__package__, 'config.json')
-            config = loads(config)
-            self.max_connections = config[0]['max_connections']
-            if self.max_connections <= 0:
-                raise ValueError
-            self.port = config[1]['port']
-            enable_log_input = config[2]['enable_log']
-            self.enable_log = True if enable_log_input.lower() == 'true' else False
-            enable_ui_input = config[3]['enable_ui']
-            self.enable_ui = True if enable_ui_input.lower() == 'true' else False
-        except FileNotFoundError:
-            print('[ERROR] Configuration file not found!')
-            self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
-        except JSONDecodeError:
-            print('[ERROR] JSON decoding error!')
-            self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
-        except (ValueError, KeyError):
-            print('[ERROR] Error in config file! Check variables')
+            try:
+                config = pkg_resources.read_text(__package__, 'config.json')
+                config = loads(config)
+                self.max_connections = config[0]['max_connections']
+                if self.max_connections <= 0:
+                    raise ValueError
+                self.port = config[1]['port']
+                enable_log_input = config[2]['enable_log']
+                self.enable_log = True if enable_log_input.lower() == 'true' else False
+                enable_ui_input = config[3]['enable_ui']
+                self.enable_ui = True if enable_ui_input.lower() == 'true' else False
+            except FileNotFoundError as fntfe:
+                raise tuichat.tuichat_utils.exceptions.ConfigurationError(f'Configuration file not found: {fntfe}')
+            except JSONDecodeError as jsde:
+                raise tuichat.tuichat_utils.exceptions.ConfigurationError(f'JSON decoding failed: {jsde}')
+            except (ValueError, KeyError) as vke:
+                raise tuichat.tuichat_utils.exceptions.ConfigurationError(f'Values or keys are not supported: {vke}')
+        except tuichat.tuichat_utils.exceptions.ConfigurationError as ce:
+            print(ce)
             self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
 
     def save_log(self, data, open_type,):
