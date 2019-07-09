@@ -33,7 +33,7 @@ class Server:
         raw_infotable = server_infotable_obj.raw_infotable
         infotable = server_infotable_obj.infotable if self.enable_ui else raw_infotable
         if self.enable_log:
-            self.save_log(raw_infotable, 'a')
+            tuichat.tuichat_utils.data_handler.Server.save_log(raw_infotable, 'a')
         print(infotable)
 
         try:
@@ -69,17 +69,6 @@ class Server:
             print(ce)
             self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
 
-    def save_log(self, data, open_type,):
-        log_file = open('log.txt', open_type)
-        log_file.write(data)
-        log_file.close()
-
-    def save_config(self, max_connections, port, enable_log, enable_ui,):
-        parameters_list = [{'max_connections': max_connections}, {'port': port}, {'enable_log': enable_log}, {'enable_ui': enable_ui}]
-        config = open('config.json', 'w')
-        parameters_json = dumps(parameters_list)
-        config.write(parameters_json)
-
     def configure(self,):
         while True:
             print('Would you like to configure server now? [Y/n]')
@@ -95,7 +84,7 @@ class Server:
 
                     save_config_input = input('Save current settings to new configuration file? (Y/n) > ').lower().strip()
                     if save_config_input == 'y':
-                        self.save_config(max_connections_input, port_input, enable_log_input, enable_ui_input)
+                        tuichat.tuichat_utils.data_handler.Server.save_config(max_connections_input, port_input, enable_log_input, enable_ui_input)
                     else:
                         pass
                     tuichat.tuichat_utils.data_handler.clear_screen()
@@ -167,7 +156,7 @@ class Server:
     def send_messages(self, data_dict, address, type,):
         if self.enable_log:
             message = f'{tuichat.tuichat_utils.data_handler.get_time()} {address} {data_dict["message"]}\n'
-            self.save_log(message, 'a')
+            tuichat.tuichat_utils.data_handler.Server.save_log(message, 'a')
 
         message = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], address, self.uuid, type)
         message_to_sender = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], '[You]', self.uuid, type)

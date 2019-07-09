@@ -3,7 +3,7 @@ from datetime import datetime
 from json import dumps
 
 
-class Server():
+class Server:
     def serialize_server_data(message, address, uuid, type):
         message_dict = {
             'message': message,
@@ -40,8 +40,19 @@ class Server():
                 raise ValueError
         return output
 
+    def save_log(data, open_type,):
+        log_file = open('log.txt', open_type)
+        log_file.write(data)
+        log_file.close()
 
-class Client():
+    def save_config(max_connections, port, enable_log, enable_ui,):
+        parameters_list = [{'max_connections': max_connections}, {'port': port}, {'enable_log': enable_log}, {'enable_ui': enable_ui}]
+        config = open('config.json', 'w')
+        parameters_json = dumps(parameters_list)
+        config.write(parameters_json)
+
+
+class Client:
     def serialize_client_data(message, uuid, type):
         message_dict = {
             'message': message,

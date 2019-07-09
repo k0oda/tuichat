@@ -4,7 +4,7 @@ from string import Template
 from . import tui_elements
 
 
-class ServerInfotable():
+class ServerInfotable:
     design_line = '║'
 
     def __init__(self, time, port, max_connections, external_ip, enable_log, enable_ui, version):
@@ -24,7 +24,7 @@ class ServerInfotable():
         )
 
 
-class Logo():
+class Logo:
     def __init__(self, program_type):
         program_type = program_type.lower().replace(" ", "")
         if program_type == 'server':
@@ -35,7 +35,7 @@ class Logo():
             self.logo = pkg_resources.read_text(tui_elements, 'client_logo.txt')
 
 
-class License():
+class License:
     def __init__(self):
         self.raw_license = pkg_resources.read_text(tui_elements, 'copyright.txt')
 
@@ -56,7 +56,7 @@ class License():
         self.license = f'{license_top}\n{license_body}\n{license_bottom}'
 
 
-class ConnectionInfo():
+class ConnectionInfo:
     design_line = '║'
 
     def __init__(self, host, port):
