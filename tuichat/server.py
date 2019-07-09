@@ -12,6 +12,7 @@ from uuid import uuid4
 class Server:
     def __init__(self,):
         self.connections = []
+        self.exceptional = []
         self.uuid = str(uuid4())
         self.nodes = [self.accept_new_clients]
         self.version = tuichat.__version__
@@ -38,7 +39,14 @@ class Server:
 
         try:
             while self.connections:
-                conns, _exc, _exc2 = select(self.connections, [], [])
+                conns, _exc, exceptional = select(self.connections, [], self.exceptional)
+                for s in self.exceptional:
+                    print(f'{s} got error, disconnecting client...')
+                    try:
+                        self.disconnect_client(s, s.getsockname()[0])
+                        conns.remove(s)
+                    except Exception as ex:
+                        print(f'An error occured: {ex}')
                 self.accept_new_clients(conns)
         except (KeyboardInterrupt, SystemExit):
             self.stop_server()
