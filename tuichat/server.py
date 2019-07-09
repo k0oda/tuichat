@@ -108,6 +108,13 @@ class Server:
             client.close()
             self.connections.remove(client)
 
+    def disconnect_client(self, conn, address,):
+        conn.close()
+        self.connections.remove(conn)
+        print(f'{tuichat.tuichat_utils.data_handler.get_time()} {address} disconnected!')
+        connection_aborted_msg = {'message': 'disconnected!'}
+        self.send_messages(connection_aborted_msg, address, 'message')
+
     def accept_new_clients(self, conns=0, exit=False,):
         if exit:
             try:
