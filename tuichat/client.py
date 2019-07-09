@@ -146,12 +146,20 @@ class Client:
                 self.port = tuichat_utils.data_handler.Client.connect_input('port')
                 self.sock.connect((self.host, self.port))
                 self.setup_connection()
+            except KeyboardInterrupt:
+                exit()
             except gaierror:
                 print("║ Host not found!\n")
             except (ConnectionRefusedError, timeout, TimeoutError):
                 print("║ Host rejected connection request!\n")
             except ValueError:
-                print("║ Incorrect value!\n")
+                try:
+                    self.sock.connect((self.host, self.port))
+                    self.setup_connection()
+                except:
+                    print("║ Incorrect value!\n")
+                else:
+                    success_connect = True
             else:
                 success_connect = True
         return self.host, self.port
