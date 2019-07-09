@@ -13,7 +13,7 @@ class Server:
     def __init__(self,):
         self.connections = []
         self.exceptional = []
-        self.uuid = str(uuid4())
+        self.uuid = uuid4()
         self.nodes = [self.accept_new_clients]
         self.version = tuichat.__version__
 
@@ -138,7 +138,7 @@ class Server:
                         connection, address = self.sock.accept()
                         connection.setblocking(0)
                         self.connections.append(connection)
-                        connection.send(bytes(dumps({'uuid': self.uuid}), encoding='utf-8'))
+                        connection.send(self.uuid.bytes)
                         print(f'{tuichat.tuichat_utils.data_handler.get_time()} {address[0]} connected!')
                         new_user_msg = {'message': 'connected!'}
                         self.send_messages(new_user_msg, address[0], 'message')
@@ -151,7 +151,7 @@ class Server:
     def get_data(self, conn, address,):
         try:
             data = conn.recv(376).decode('utf-8')
-            data = data.split(self.uuid)
+            data = data.split(str(self.uuid))
             data = data[:-1]
             for element in data:
                 data_dict = loads(element)
@@ -173,8 +173,8 @@ class Server:
             message = f'{tuichat.tuichat_utils.data_handler.get_time()} {address} {data_dict["message"]}\n'
             tuichat.tuichat_utils.data_handler.Server.save_log(message, 'a')
 
-        message = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], address, self.uuid, type)
-        message_to_sender = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], '[You]', self.uuid, type)
+        message = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], address, str(self.uuid), type)
+        message_to_sender = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], '[You]', str(self.uuid), type)
         for client in self.connections:
             if client is self.sock:
                 continue

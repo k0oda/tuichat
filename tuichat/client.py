@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from uuid import UUID
 from socket import socket, timeout, gaierror
 from tuichat import tuichat_utils
 from threading import Timer
@@ -127,9 +128,8 @@ class Client:
             return False
 
     def receive_uuid(self,):
-        uuid = self.sock.recv(256).decode('utf-8')
-        uuid = loads(uuid)
-        self.uuid = uuid['uuid']
+        uuid_bytes = self.sock.recv(16)
+        self.uuid = str(UUID(bytes=uuid_bytes))
 
     def setup_connection(self,):
         self.sock.setblocking(0)
