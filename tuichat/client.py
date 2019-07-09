@@ -148,18 +148,13 @@ class Client:
                 self.setup_connection()
             except KeyboardInterrupt:
                 exit()
+                break
             except gaierror:
                 print("║ Host not found!\n")
             except (ConnectionRefusedError, timeout, TimeoutError):
                 print("║ Host rejected connection request!\n")
-            except ValueError:
-                try:
-                    self.sock.connect((self.host, self.port))
-                    self.setup_connection()
-                except:
-                    print("║ Incorrect value!\n")
-                else:
-                    success_connect = True
+            except ValueError as ex:
+                print(f"║ ValueError: {ex}!\n")
             else:
                 success_connect = True
         return self.host, self.port
