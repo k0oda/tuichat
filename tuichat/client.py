@@ -90,8 +90,8 @@ class Client:
     def handle_server_closed(self,):
         print("\n║ Server closed!")
         self.freeze = True
-        connect_again = input("Try to connect again? (Y/n) > ").lower().strip()
-        if connect_again == "y":
+        connect_again = tuichat_utils.data_handler.Client.connect_input('reconnect')
+        if connect_again:
             respond = self.reconnect()
             if respond is True:
                 print("║ Connection established!\n")
@@ -142,8 +142,8 @@ class Client:
 
         while not success_connect:
             try:
-                self.host = input("║ Enter host: ").strip()
-                self.port = int(input("║ Enter port: ").strip())
+                self.host = tuichat_utils.data_handler.Client.connect_input('host')
+                self.port = tuichat_utils.data_handler.Client.connect_input('port')
                 self.sock.connect((self.host, self.port))
                 self.setup_connection()
             except gaierror:
