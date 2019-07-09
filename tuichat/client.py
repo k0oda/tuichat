@@ -167,8 +167,11 @@ class Client:
             print(ex)
         else:
             print('Successfully disconnected from server! [OK]')
-            input('Press any key to exit ...')
-            exit()
+            answer = tuichat_utils.data_handler.Client.connect_input('disconnect')
+            if answer:
+                self.connect()
+            else:
+                exit()
 
 
 if __name__ == '__main__':
