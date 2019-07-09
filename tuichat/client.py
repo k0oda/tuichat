@@ -63,7 +63,7 @@ class Client:
                 self.receive_data()
                 Timer(1.0, self.receive_data).start()
                 if self.data_queue:
-                    prompt = f'You have [{len(self.data_queue) + 1}] messages. Enter a message or enter "/r" to print new messages > '
+                    prompt = f'You have [{len(self.data_queue)}] messages. Enter a message or enter "/r" to print new messages > '
                 else:
                     prompt = 'Enter a message > '
                 message_input = input(prompt)
