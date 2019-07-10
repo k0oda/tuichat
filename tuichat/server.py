@@ -99,6 +99,9 @@ class Server:
                 except ValueError:
                     tuichat.tuichat_utils.data_handler.clear_screen()
                     print('[ERROR] Error in data entry!')
+                except Exception as ex:
+                    tuichat.tuichat_utils.data_handler.clear_screen()
+                    print(f'[ERROR] {ex}')
                 else:
                     return max_connections_input, port_input, enable_log_input, enable_ui_input
             elif answer == 'n':

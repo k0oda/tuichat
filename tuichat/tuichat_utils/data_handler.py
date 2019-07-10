@@ -1,3 +1,4 @@
+from .exceptions import InputTypeError
 from os import system, name
 from datetime import datetime
 from json import dumps
@@ -24,20 +25,12 @@ class Server:
                 raise ValueError
         elif type == 'enable_log':
             output = input('Enable log? (Y/n) > ').lower().strip()
-            if output =='y':
-                output = True
-            elif output == 'n':
-                output = False
-            else:
-                raise ValueError
+            output = True if output == 'y' else False
         elif type == 'enable_ui':
             output = input('Enable UI symbols? (Y/n) > ').lower().strip()
-            if output == 'y':
-                output = True
-            elif output == 'n':
-                output = False
-            else:
-                raise ValueError
+            output = True if output == 'y' else False
+        else:
+            raise InputTypeError('No input type chosen')
         return output
 
     def save_log(data, open_type,):
@@ -64,6 +57,8 @@ class Client:
         elif type == 'disconnect':
             output = input('Connect to another server? (Y/n) > ').lower().strip()
             output = True if output == 'y' else False
+        else:
+            raise InputTypeError('No input type chosen')
         return output
 
     def serialize_client_data(message, uuid, type):
