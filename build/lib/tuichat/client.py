@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from uuid import UUID
 from socket import socket, timeout, gaierror
 from tuichat import tuichat_utils
 from threading import Timer
@@ -63,7 +64,7 @@ class Client:
                 self.receive_data()
                 Timer(1.0, self.receive_data).start()
                 if self.data_queue:
-                    prompt = f'You have [{len(self.data_queue) + 1}] messages. Enter a message or enter "/r" to print new messages > '
+                    prompt = f'You have [{len(self.data_queue)}] messages. Enter a message or enter "/r" to print new messages > '
                 else:
                     prompt = 'Enter a message > '
                 message_input = input(prompt)
@@ -90,8 +91,8 @@ class Client:
     def handle_server_closed(self,):
         print("\n║ Server closed!")
         self.freeze = True
-        connect_again = input("Try to connect again? (Y/n) > ").lower().strip()
-        if connect_again == "y":
+        connect_again = tuichat_utils.data_handler.Client.connect_input('reconnect')
+        if connect_again:
             respond = self.reconnect()
             if respond is True:
                 print("║ Connection established!\n")
@@ -127,9 +128,8 @@ class Client:
             return False
 
     def receive_uuid(self,):
-        uuid = self.sock.recv(256).decode('utf-8')
-        uuid = loads(uuid)
-        self.uuid = uuid['uuid']
+        uuid_bytes = self.sock.recv(16)
+        self.uuid = str(UUID(bytes=uuid_bytes))
 
     def setup_connection(self,):
         self.sock.setblocking(0)
@@ -142,16 +142,19 @@ class Client:
 
         while not success_connect:
             try:
-                self.host = input("║ Enter host: ").strip()
-                self.port = int(input("║ Enter port: ").strip())
+                self.host = tuichat_utils.data_handler.Client.connect_input('host')
+                self.port = tuichat_utils.data_handler.Client.connect_input('port')
                 self.sock.connect((self.host, self.port))
                 self.setup_connection()
+            except KeyboardInterrupt:
+                exit()
+                break
             except gaierror:
                 print("║ Host not found!\n")
             except (ConnectionRefusedError, timeout, TimeoutError):
                 print("║ Host rejected connection request!\n")
-            except ValueError:
-                print("║ Incorrect value!\n")
+            except ValueError as ex:
+                print(f"║ ValueError: {ex}!\n")
             else:
                 success_connect = True
         return self.host, self.port
@@ -167,8 +170,11 @@ class Client:
             print(ex)
         else:
             print('Successfully disconnected from server! [OK]')
-            input('Press any key to exit ...')
-            exit()
+            answer = tuichat_utils.data_handler.Client.connect_input('disconnect')
+            if answer:
+                self.connect()
+            else:
+                exit()
 
 
 if __name__ == '__main__':

@@ -12,7 +12,8 @@ from uuid import uuid4
 class Server:
     def __init__(self,):
         self.connections = []
-        self.uuid = str(uuid4())
+        self.exceptional = []
+        self.uuid = uuid4()
         self.nodes = [self.accept_new_clients]
         self.version = tuichat.__version__
 
@@ -33,12 +34,19 @@ class Server:
         raw_infotable = server_infotable_obj.raw_infotable
         infotable = server_infotable_obj.infotable if self.enable_ui else raw_infotable
         if self.enable_log:
-            self.save_log(raw_infotable, 'a')
+            tuichat.tuichat_utils.data_handler.Server.save_log(raw_infotable, 'a')
         print(infotable)
 
         try:
             while self.connections:
-                conns, _exc, _exc2 = select(self.connections, [], [])
+                conns, _exc, exceptional = select(self.connections, [], self.exceptional)
+                for s in self.exceptional:
+                    print(f'{s} got error, disconnecting client...')
+                    try:
+                        self.disconnect_client(s, s.getsockname()[0])
+                        conns.remove(s)
+                    except Exception as ex:
+                        print(f'An error occured: {ex}')
                 self.accept_new_clients(conns)
         except (KeyboardInterrupt, SystemExit):
             self.stop_server()
@@ -69,17 +77,6 @@ class Server:
             print(ce)
             self.max_connections, self.port, self.enable_log, self.enable_ui = self.configure()
 
-    def save_log(self, data, open_type,):
-        log_file = open('log.txt', open_type)
-        log_file.write(data)
-        log_file.close()
-
-    def save_config(self, max_connections, port, enable_log, enable_ui,):
-        parameters_list = [{'max_connections': max_connections}, {'port': port}, {'enable_log': enable_log}, {'enable_ui': enable_ui}]
-        config = open('config.json', 'w')
-        parameters_json = dumps(parameters_list)
-        config.write(parameters_json)
-
     def configure(self,):
         while True:
             print('Would you like to configure server now? [Y/n]')
@@ -95,13 +92,16 @@ class Server:
 
                     save_config_input = input('Save current settings to new configuration file? (Y/n) > ').lower().strip()
                     if save_config_input == 'y':
-                        self.save_config(max_connections_input, port_input, enable_log_input, enable_ui_input)
+                        tuichat.tuichat_utils.data_handler.Server.save_config(max_connections_input, port_input, enable_log_input, enable_ui_input)
                     else:
                         pass
                     tuichat.tuichat_utils.data_handler.clear_screen()
                 except ValueError:
                     tuichat.tuichat_utils.data_handler.clear_screen()
                     print('[ERROR] Error in data entry!')
+                except Exception as ex:
+                    tuichat.tuichat_utils.data_handler.clear_screen()
+                    print(f'[ERROR] {ex}')
                 else:
                     return max_connections_input, port_input, enable_log_input, enable_ui_input
             elif answer == 'n':
@@ -119,6 +119,13 @@ class Server:
             client.close()
             self.connections.remove(client)
 
+    def disconnect_client(self, conn, address,):
+        conn.close()
+        self.connections.remove(conn)
+        print(f'{tuichat.tuichat_utils.data_handler.get_time()} {address} disconnected!')
+        connection_aborted_msg = {'message': 'disconnected!'}
+        self.send_messages(connection_aborted_msg, address, 'message')
+
     def accept_new_clients(self, conns=0, exit=False,):
         if exit:
             try:
@@ -134,7 +141,7 @@ class Server:
                         connection, address = self.sock.accept()
                         connection.setblocking(0)
                         self.connections.append(connection)
-                        connection.send(bytes(dumps({'uuid': self.uuid}), encoding='utf-8'))
+                        connection.send(self.uuid.bytes)
                         print(f'{tuichat.tuichat_utils.data_handler.get_time()} {address[0]} connected!')
                         new_user_msg = {'message': 'connected!'}
                         self.send_messages(new_user_msg, address[0], 'message')
@@ -147,7 +154,7 @@ class Server:
     def get_data(self, conn, address,):
         try:
             data = conn.recv(376).decode('utf-8')
-            data = data.split(self.uuid)
+            data = data.split(str(self.uuid))
             data = data[:-1]
             for element in data:
                 data_dict = loads(element)
@@ -167,10 +174,10 @@ class Server:
     def send_messages(self, data_dict, address, type,):
         if self.enable_log:
             message = f'{tuichat.tuichat_utils.data_handler.get_time()} {address} {data_dict["message"]}\n'
-            self.save_log(message, 'a')
+            tuichat.tuichat_utils.data_handler.Server.save_log(message, 'a')
 
-        message = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], address, self.uuid, type)
-        message_to_sender = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], '[You]', self.uuid, type)
+        message = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], address, str(self.uuid), type)
+        message_to_sender = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], '[You]', str(self.uuid), type)
         for client in self.connections:
             if client is self.sock:
                 continue
