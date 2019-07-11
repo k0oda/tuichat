@@ -1,4 +1,0 @@
-[console_scripts]
-tuiclient = tuichat.__main__:tuiclient
-tuiserver = tuichat.__main__:tuiserver
-

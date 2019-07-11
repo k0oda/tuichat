@@ -1,8 +1,22 @@
+import os
 import setuptools
 import tuichat
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
+
+
+class CleanCommand(setuptools.Command):
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        os.system('rm -vrf ./build ./dist ./*.pyc ./*.tgz ./*.egg-info')
 
 setuptools.setup(
     name="tuichat",
@@ -16,6 +30,9 @@ setuptools.setup(
     download_url="httpsL//github.com/kukree/tuichat/tarball/master",
     packages=setuptools.find_packages(),
     include_package_data=True,
+    cmdclass={
+      'clean': CleanCommand,
+    },
     install_requires=[
         'tqdm',
         'importlib.resources'
