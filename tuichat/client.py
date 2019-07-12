@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import rsa
 from uuid import UUID
 from socket import socket, timeout, gaierror
 from tuichat import tuichat_utils
@@ -11,6 +12,7 @@ from time import sleep
 
 class Client:
     def __init__(self,):
+        self.pubkey, self.privkey = rsa.newkeys(512)
         self.data_queue = []
         self.freeze = False
         self.msg_timeout = 0.1

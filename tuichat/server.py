@@ -2,6 +2,7 @@
 
 import importlib.resources as pkg_resources
 import tuichat
+import rsa
 from select import select
 from socket import socket
 from urllib import request
@@ -11,7 +12,9 @@ from uuid import uuid4
 
 class Server:
     def __init__(self,):
+        self.pubkey, self.privkey = rsa.newkeys(512)
         self.connections = []
+        self.keys = []  # Index of connection == index of his public key
         self.exceptional = []
         self.uuid = uuid4()
         self.nodes = [self.accept_new_clients]
