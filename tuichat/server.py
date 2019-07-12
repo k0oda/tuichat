@@ -17,7 +17,7 @@ class Server:
         self.keys = []  # Index of connection == index of his public key
         self.exceptional = []
         self.uuid = uuid4()
-        self.nodes = [self.accept_new_clients]
+        self.nodes = [self.distribute_connections]
         self.version = tuichat.__version__
 
     def main(self,):
@@ -50,7 +50,7 @@ class Server:
                         conns.remove(s)
                     except Exception as ex:
                         print(f'An error occured: {ex}')
-                self.accept_new_clients(conns)
+                self.distribute_connections(conns)
         except (KeyboardInterrupt, SystemExit):
             self.stop_server()
         except Exception as ex:
@@ -129,7 +129,7 @@ class Server:
         connection_aborted_msg = {'message': 'disconnected!'}
         self.send_messages(connection_aborted_msg, address, 'message')
 
-    def accept_new_clients(self, conns=[], exit=False,):
+    def distribute_connections(self, conns=[], exit=False,):
         if exit:
             try:
                 self.disconnect_clients()
@@ -140,22 +140,25 @@ class Server:
         else:
             for resource in conns:
                 if resource is self.sock:
-                    if len(self.connections) < self.max_connections:
-                        connection, address = self.sock.accept()
-                        connection.send(self.uuid.bytes)
-                        connection.send(bytes(str(self.pubkey), encoding='utf-8'))
-                        pub = connection.recv(172).decode('utf-8')
-                        connection.setblocking(0)
-                        self.connections.append(connection)
-                        self.keys.append(pub)
-                        print(f'{tuichat.tuichat_utils.data_handler.get_time()} {address[0]} connected!')
-                        new_user_msg = {'message': 'connected!'}
-                        self.send_messages(new_user_msg, address[0], 'message')
-                    else:
-                        temp_connection, _temp_address = self.sock.accept()
-                        temp_connection.close()
+                    self.accept_new_clients()
                 else:
                     self.get_data(resource, resource.getsockname()[0])
+
+    def accept_new_clients(self,):
+        if len(self.connections) < self.max_connections:
+            connection, address = self.sock.accept()
+            connection.send(self.uuid.bytes)
+            connection.send(bytes(str(self.pubkey), encoding='utf-8'))
+            pub = connection.recv(172).decode('utf-8')
+            connection.setblocking(0)
+            self.connections.append(connection)
+            self.keys.append(pub)
+            print(f'{tuichat.tuichat_utils.data_handler.get_time()} {address[0]} connected!')
+            new_user_msg = {'message': 'connected!'}
+            self.send_messages(new_user_msg, address[0], 'message')
+        else:
+            temp_connection, _temp_address = self.sock.accept()
+            temp_connection.close()
 
     def get_data(self, conn, address,):
         try:
