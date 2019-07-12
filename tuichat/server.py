@@ -174,17 +174,17 @@ class Server:
             connection_aborted_msg = {'message': 'disconnected!'}
             self.send_messages(connection_aborted_msg, address, 'message')
 
-    def send_messages(self, data_dict, address, type,):
+    def send_messages(self, data_dict, sender_address, type,):
         if self.enable_log:
-            message = f'{tuichat.tuichat_utils.data_handler.get_time()} {address} {data_dict["message"]}\n'
+            message = f'{tuichat.tuichat_utils.data_handler.get_time()} {sender_address} {data_dict["message"]}\n'
             tuichat.tuichat_utils.data_handler.Server.save_log(message, 'a')
 
-        message = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], address, str(self.uuid), type)
+        message = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], sender_address, str(self.uuid), type)
         message_to_sender = tuichat.tuichat_utils.data_handler.Server.serialize_server_data(data_dict['message'], '[You]', str(self.uuid), type)
         for client in self.connections:
             if client is self.sock:
                 continue
-            elif client.getsockname()[0] != address:
+            elif client.getsockname()[0] != sender_address:
                 client.sendall(bytes(message, encoding='utf-8'))
             else:
                 client.sendall(bytes(message_to_sender, encoding='utf-8'))
