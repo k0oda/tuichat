@@ -133,10 +133,19 @@ class Client:
         uuid_bytes = self.sock.recv(16)
         self.uuid = str(UUID(bytes=uuid_bytes))
 
+    def receive_key(self,):
+        pub = self.sock.recv(172).decode('utf-8')
+        self.server_pub = pub
+
+    def send_key(self,):
+        self.sock.send(bytes(str(self.pubkey), encoding='utf-8'))
+
     def setup_connection(self,):
         self.sock.setblocking(0)
         self.sock.settimeout(5)
         self.receive_uuid()
+        self.receive_key()
+        self.send_key()
         self.sock.settimeout(self.msg_timeout)
 
     def connect(self, success_connect=False,):

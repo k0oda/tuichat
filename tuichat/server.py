@@ -142,9 +142,12 @@ class Server:
                 if resource is self.sock:
                     if len(self.connections) < self.max_connections:
                         connection, address = self.sock.accept()
+                        connection.send(self.uuid.bytes)
+                        connection.send(bytes(str(self.pubkey), encoding='utf-8'))
+                        pub = connection.recv(172).decode('utf-8')
                         connection.setblocking(0)
                         self.connections.append(connection)
-                        connection.send(self.uuid.bytes)
+                        self.keys.append(pub)
                         print(f'{tuichat.tuichat_utils.data_handler.get_time()} {address[0]} connected!')
                         new_user_msg = {'message': 'connected!'}
                         self.send_messages(new_user_msg, address[0], 'message')
