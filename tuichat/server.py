@@ -129,7 +129,7 @@ class Server:
         connection_aborted_msg = {'message': 'disconnected!'}
         self.send_messages(connection_aborted_msg, address, 'message')
 
-    def accept_new_clients(self, conns=0, exit=False,):
+    def accept_new_clients(self, conns=[], exit=False,):
         if exit:
             try:
                 self.disconnect_clients()
