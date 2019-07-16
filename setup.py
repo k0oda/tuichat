@@ -16,7 +16,8 @@ class CleanCommand(setuptools.Command):
         pass
 
     def run(self):
-        os.system('rm -vrf ./build ./dist ./*.pyc ./*.tgz ./*.egg-info')
+        os.system('rm -vrf ./build ./dist ./*.pyc ./*.tgz ./*.egg-info ./tuichat/__pycache__ ./tuichat/*/__pycache__ ./tuichat/*/*/__pycache__')
+
 
 setuptools.setup(
     name="tuichat",
