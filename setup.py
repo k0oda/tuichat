@@ -36,7 +36,8 @@ setuptools.setup(
     },
     install_requires=[
         'tqdm',
-        'importlib.resources'
+        'importlib.resources',
+        'pyqt5'
     ],
     entry_points={
       'console_scripts': [
