@@ -46,21 +46,6 @@ class Server:
 
 
 class Client:
-    def connect_input(type,):
-        if type == 'host':
-            output = input('║ Enter host: ').strip()
-        elif type == 'port':
-            output = int(input('║ Enter port: ').strip())
-        elif type == 'reconnect':
-            output = input("Try to connect again? (Y/n) > ").lower().strip()
-            output = True if output == 'y' else False
-        elif type == 'disconnect':
-            output = input('Connect to another server? (Y/n) > ').lower().strip()
-            output = True if output == 'y' else False
-        else:
-            raise InputTypeError('No input type chosen')
-        return output
-
     def serialize_client_data(message, uuid, type):
         message_dict = {
             'message': message,
