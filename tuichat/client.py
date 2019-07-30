@@ -11,30 +11,35 @@ from time import sleep
 
 
 class Client:
-    def __init__(self,):
+    def __init__(self, mode='cli'):
         self.pubkey, self.privkey = rsa.newkeys(512)
         self.data_queue = []
         self.freeze = False
         self.msg_timeout = 0.1
         self.msg_max_symbols = 300
+        self.mode = mode
+        if self.mode.lower() == 'gui':
+            self.io = tuichat_utils.io.Client.GUI
+        else:
+            self.io = tuichat_utils.io.Client.CLI
 
     def main(self,):
         logo_obj = tuichat_utils.ui.Logo('client')
         logo = logo_obj.logo
-        print(logo)
+        self.io.output(logo)
 
         license_obj = tuichat_utils.ui.License()
         copyright = license_obj.license
-        print(copyright)
+        self.io.output(copyright)
 
         host, port = self.connect()
         tuichat_utils.data_handler.clear_screen()
-        print(logo)
-        print(copyright)
+        self.io.output(logo)
+        self.io.output(copyright)
 
         connection_info_obj = tuichat_utils.ui.ConnectionInfo(host, port)
         connection_info = connection_info_obj.connection_info
-        print(connection_info)
+        self.io.output(connection_info)
 
         self.start_client()
 
@@ -57,7 +62,7 @@ class Client:
 
     def print_data(self,):
         for data in self.data_queue:
-            print(data)
+            self.io.output(data)
         self.data_queue.clear()
 
     def send_data(self,):
@@ -71,7 +76,7 @@ class Client:
                     prompt = 'Enter a message > '
                 message_input = input(prompt)
                 if len(message_input) > self.msg_max_symbols:
-                    print(f'║ The number of symbols of your message is more than {self.msg_max_symbols}, using first {self.msg_max_symbols} symbols')
+                    self.io.output(f'║ The number of symbols of your message is more than {self.msg_max_symbols}, using first {self.msg_max_symbols} symbols')
                     message_input = message_input[:self.msg_max_symbols]
                 if message_input != "/r":
                     message = tuichat_utils.data_handler.Client.serialize_client_data(message_input, self.uuid, 'message')
@@ -87,23 +92,22 @@ class Client:
         except (KeyboardInterrupt, SystemExit):
             self.disconnect()
         except Exception as ex:
-            print(ex)
+            self.io.output(ex, 'error')
             self.disconnect()
 
     def handle_server_closed(self,):
-        print("\n║ Server closed!")
+        self.io.output("\n║ Server closed!")
         self.freeze = True
-        connect_again = tuichat_utils.data_handler.Client.connect_input('reconnect')
+        connect_again = self.io.connect_input('reconnect')
         if connect_again:
             respond = self.reconnect()
             if respond is True:
-                print("║ Connection established!\n")
+                self.io.output("║ Connection established!\n")
                 self.freeze = False
                 self.start_client()
             else:
-                print("\n║ Server did not respond!")
-                input("Press any key to exit...")
-                exit()
+                self.io.output("\n║ Server did not respond!")
+                self.io.exit()
         else:
             exit()
 
@@ -116,7 +120,7 @@ class Client:
                 self.sock = socket()
                 self.sock.connect((self.host, self.port))
             except Exception as ex:
-                print(f'An error occured: {ex}')
+                self.io.output(ex, 'error')
                 sleep(1)
                 i += 1
                 pbar.update(1)
@@ -148,40 +152,44 @@ class Client:
         self.send_key()
         self.sock.settimeout(self.msg_timeout)
 
-    def connect(self, success_connect=False,):
+    def connect(self, success_connect=False, host=None, port=None):
         self.sock = socket()
 
         while not success_connect:
             try:
-                self.host = tuichat_utils.data_handler.Client.connect_input('host')
-                self.port = tuichat_utils.data_handler.Client.connect_input('port')
+                if self.mode == 'cli':
+                    self.host = self.io.connect_input('host')
+                    self.port = self.io.connect_input('port')
+                else:
+                    self.host = host
+                    self.port = port
                 self.sock.connect((self.host, self.port))
                 self.setup_connection()
             except KeyboardInterrupt:
                 exit()
                 break
             except gaierror:
-                print("║ Host not found!\n")
+                self.io.output("║ Host not found!\n", 'error')
             except (ConnectionRefusedError, timeout, TimeoutError):
-                print("║ Host rejected connection request!\n")
+                self.io.output("║ Host rejected connection request!\n", 'error')
             except ValueError as ex:
-                print(f"║ ValueError: {ex}!\n")
+                self.io.output(f"║ ValueError: {ex}!\n", 'error')
             else:
                 success_connect = True
         return self.host, self.port
 
     def disconnect(self,):
-        print(f'\nDisconnecting from {self.sock.getsockname()[0]} ...')
+        tuichat_utils.data_handler.Client.output(f'\nDisconnecting from {self.sock.getsockname()[0]} ...')
         try:
             self.freeze = True
             message = tuichat_utils.data_handler.Client.serialize_client_data('', self.uuid, 'disconnect')
             self.sock.sendall(bytes(message, encoding="utf-8"))
             self.sock.close()
         except Exception as ex:
-            print(ex)
+            self.io.output(ex, 'error')
         else:
-            print('Successfully disconnected from server! [OK]')
-            answer = tuichat_utils.data_handler.Client.connect_input('disconnect')
+            self.io.output('Successfully disconnected from server! [OK]')
+            answer = self.io.connect_input('disconnect')
             if answer:
                 self.connect()
             else:
