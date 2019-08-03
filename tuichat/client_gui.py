@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 import sys
-import tuichat.client
+import tuichat
 
 
 class ClientMainWindow(QMainWindow):
@@ -18,7 +18,7 @@ class ClientMainWindow(QMainWindow):
         self.initUi()
 
     def initUi(self):
-        client = tuichat.client.Client()
+        client = tuichat.client.Client(mode='gui')
         self.connectToServer(client)
 
         self.setGeometry(300, 300, 600, 400)
@@ -26,12 +26,16 @@ class ClientMainWindow(QMainWindow):
         self.show()
 
     def connectToServer(self, client_obj):
-        self.connection = ConnectWindow()
+        connectWindow = ConnectWindow(client_obj, self)
+        response = connectWindow.exec_()
+        if response == QDialog.Accepted:
+            self.client = connectWindow.client
 
 
 class ConnectWindow(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, client, parent=None):
         super().__init__(parent)
+        self.client = client
         self.initWindow()
 
     def initWindow(self):
@@ -40,13 +44,14 @@ class ConnectWindow(QDialog):
         hostLabel = QLabel('Host')
         portLabel = QLabel('Port')
 
-        hostLineEdit = QLineEdit()
-        portLineEdit = QLineEdit()
+        self.hostLineEdit = QLineEdit()
+        self.portLineEdit = QLineEdit()
 
         okButton = QPushButton('Connect')
+        okButton.clicked.connect(self.connectToServer)
 
-        layout.addRow(hostLabel, hostLineEdit)
-        layout.addRow(portLabel, portLineEdit)
+        layout.addRow(hostLabel, self.hostLineEdit)
+        layout.addRow(portLabel, self.portLineEdit)
         layout.addWidget(okButton)
 
         layout.setFormAlignment(Qt.AlignCenter)
@@ -58,6 +63,10 @@ class ConnectWindow(QDialog):
         self.resize(self.sizeHint())
         self.setWindowTitle('Connect')
         self.show()
+
+    def connectToServer(self):
+        self.client.connect(host=self.hostLineEdit.text(), port=int(self.portLineEdit.text()))
+        self.accept()
 
 
 if __name__ == '__main__':
