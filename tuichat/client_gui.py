@@ -1,11 +1,15 @@
 from PyQt5.QtWidgets import (
     QMainWindow,
+    QWidget,
     QApplication,
     QDialog,
     QFormLayout,
     QLabel,
     QLineEdit,
     QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QHBoxLayout
 )
 from PyQt5.QtCore import Qt
 import sys
@@ -15,14 +19,30 @@ import tuichat
 class ClientMainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.mainWindow = QWidget()
         self.initUi()
 
     def initUi(self):
         client = tuichat.client.Client(mode='gui')
         self.connectToServer(client)
 
+        self.chatDisplayTextEdit = QTextEdit()
+        self.chatDisplayTextEdit.setReadOnly(True)
+
+        self.messageTextEdit = QTextEdit()
+        self.messageTextEdit.setPlaceholderText('Enter a message')
+
+        self.layout = QVBoxLayout()
+        self.messagePanel = QHBoxLayout()
+        self.messagePanel.addWidget(self.messageTextEdit, 5)
+
+        self.layout.addWidget(self.chatDisplayTextEdit, 5)
+        self.layout.addLayout(self.messagePanel, 1)
+
+        self.mainWindow.setLayout(self.layout)
         self.setGeometry(300, 300, 600, 400)
         self.setWindowTitle('TuiChat Client')
+        self.setCentralWidget(self.mainWindow)
         self.show()
 
     def connectToServer(self, client_obj):
