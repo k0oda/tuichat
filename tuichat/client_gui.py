@@ -32,10 +32,14 @@ class ClientMainWindow(QMainWindow):
         self.messageTextEdit = QTextEdit()
         self.messageTextEdit.setPlaceholderText('Enter a message')
 
-        self.layout = QVBoxLayout()
+        self.sendButton = QPushButton()
+        self.sendButton.setText('Send')
+
         self.messagePanel = QHBoxLayout()
         self.messagePanel.addWidget(self.messageTextEdit, 5)
+        self.messagePanel.addWidget(self.sendButton, 1)
 
+        self.layout = QVBoxLayout()
         self.layout.addWidget(self.chatDisplayTextEdit, 5)
         self.layout.addLayout(self.messagePanel, 1)
 
