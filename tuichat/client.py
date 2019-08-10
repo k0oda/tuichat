@@ -11,39 +11,145 @@ from time import sleep
 
 
 class Client:
-    def __init__(self, mode='cli'):
-        self.pubkey, self.privkey = rsa.newkeys(512)
+    def __init__(self,
+                 mode='cli',
+                 show_logo=True,
+                 show_license=True,
+                 show_connection_info=True,
+                 msg_timeout=0.1,
+                 server_host=None,
+                 server_port=None
+                 ):
+        self.MODE = mode
+        self.SHOW_LOGO = show_logo
+        self.SHOW_LICENSE = show_license
+        self.SHOW_CONNECTION_INFO = show_connection_info
+        self.MSG_TIMEOUT = msg_timeout
+
+        self.PUBKEY, self.PRIVKEY = rsa.newkeys(512)
         self.data_queue = []
-        self.freeze = False
-        self.msg_timeout = 0.1
-        self.msg_max_symbols = 300
-        self.mode = mode
-        if self.mode.lower() == 'gui':
-            self.io = tuichat_utils.io.Client.GUI
+        self.freeze = False                     # Variable for freezing io modules
+        self.MSG_MAX_SYMBOLS = 300
+
+        self.SERVER_CLOSED_EXCEPTIONS = (ConnectionResetError, BrokenPipeError, ConnectionAbortedError)
+
+        if self.MODE.lower() == 'gui':
+            self.IO = tuichat_utils.io.Client.GUI
         else:
-            self.io = tuichat_utils.io.Client.CLI
+            self.IO = tuichat_utils.io.Client.CLI
 
-    def main(self,):
-        logo_obj = tuichat_utils.ui.Logo('client')
-        logo = logo_obj.logo
-        self.io.output(logo)
+        if self.SHOW_LOGO:
+            logo_obj = tuichat_utils.ui.Logo('client')
+            self.LOGO = logo_obj.logo
 
-        license_obj = tuichat_utils.ui.License()
-        copyright = license_obj.license
-        self.io.output(copyright)
+        if self.SHOW_LICENSE:
+            license_obj = tuichat_utils.ui.License()
+            self.COPYRIGHT = license_obj.license
 
-        host, port = self.connect()
-        tuichat_utils.data_handler.clear_screen()
-        self.io.output(logo)
-        self.io.output(copyright)
+        if server_host is not None and server_port is not None:
+            self.connect(server_host, server_port)
 
-        connection_info_obj = tuichat_utils.ui.ConnectionInfo(host, port)
-        connection_info = connection_info_obj.connection_info
-        self.io.output(connection_info)
+    def main(self):
+        if self.SHOW_LOGO:
+            self.IO.output(self.LOGO)
+        if self.SHOW_LICENSE:
+            self.IO.output(self.COPYRIGHT)
 
+        self.connect()
         self.start_client()
 
-    def receive_data(self,):
+    def connect(self, host=None, port=None):
+        if self.sock:
+            self.sock.close()
+            del self.sock
+        self.sock = socket()
+
+        success_connect = False
+        while not success_connect:
+            try:
+                if self.MODE == 'cli' and host is None and port is None:
+                    self.host = self.IO.connect_input('host')
+                    self.port = self.IO.connect_input('port')
+                elif host is not None and port is not None:
+                    self.host = host
+                    self.port = port
+                else:
+                    raise AttributeError('No host or port defined')
+                self.sock.connect((self.host, self.port))
+                self.setup_connection()
+            except KeyboardInterrupt:
+                exit()
+            else:
+                success_connect = True
+
+        if self.MODE == 'cli':
+            tuichat_utils.data_handler.clear_screen()
+            if self.SHOW_LOGO:
+                self.IO.output(self.LOGO)
+            if self.SHOW_LICENSE:
+                self.IO.output(self.COPYRIGHT)
+            if self.SHOW_CONNECTION_INFO:
+                connection_info_obj = tuichat_utils.ui.ConnectionInfo(host, port)
+                connection_info = connection_info_obj.connection_info
+                self.IO.output(connection_info)
+
+        return self.host, self.port
+
+    def setup_connection(self):
+        self.sock.setblocking(False)
+        self.sock.settimeout(5)                 # Getting handshake data timeout
+        self.exchange_data()
+        self.sock.settimeout(self.MSG_TIMEOUT)  # Main timeout
+
+    def exchange_data(self):
+        uuid_bytes = self.sock.recv(16)
+        self.uuid = str(UUID(bytes=uuid_bytes))
+
+        self.server_pub = self.sock.recv(172).decode('utf-8')
+
+        self.sock.send(bytes(str(self.PUBKEY), encoding='utf-8'))
+
+    def start_client(self):
+        try:
+            self.send_data()
+        except Exception as ex:
+            self.disconnect()
+            if ex not in (KeyboardInterrupt, SystemExit):
+                raise ex
+
+    def send_data(self):
+        while not self.freeze:
+            try:
+                self.receive_data()
+                Timer(1.0, self.receive_data).start()
+
+                message_input = self.init_prompt()
+
+                if len(message_input) > self.MSG_MAX_SYMBOLS:
+                    self.IO.output(f'║ The number of symbols of your message is more than {self.MSG_MAX_SYMBOLS}, '
+                                   f'using first {self.MSG_MAX_SYMBOLS} symbols')
+                    message_input = message_input[:self.MSG_MAX_SYMBOLS]
+
+                if message_input == "/r":
+                    self.print_data()
+                else:
+                    message = tuichat_utils.data_handler.Client.serialize_client_data(
+                        message_input,
+                        self.uuid,
+                        'message'
+                    )
+                    self.sock.sendall(bytes(message, encoding="utf-8"))
+            except self.SERVER_CLOSED_EXCEPTIONS:
+                self.handle_server_closed()
+
+    def init_prompt(self):
+        if self.data_queue:
+            prompt = f'You have [{len(self.data_queue)}] messages. Enter a message or enter "/r" to print new messages > '
+        else:
+            prompt = 'Enter a message > '
+        return input(prompt)
+
+    def receive_data(self):
         if not self.freeze:
             try:
                 data = self.sock.recv(1128).decode('utf-8')
@@ -54,142 +160,65 @@ class Client:
                     if data_dict['type'] == 'server_closed':
                         raise ConnectionResetError
                     else:
-                        self.data_queue.append(f'{tuichat_utils.data_handler.get_time()} {data_dict["sender_address"]} - {data_dict["message"]}')
+                        self.data_queue.append(
+                            f'{tuichat_utils.data_handler.get_time()} {data_dict["sender_address"]} - {data_dict["message"]}')
             except timeout:
                 return
-            except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError):
+            except self.SERVER_CLOSED_EXCEPTIONS:
                 self.handle_server_closed()
 
-    def print_data(self,):
+    def print_data(self):
         for data in self.data_queue:
-            self.io.output(data)
+            self.IO.output(data)
         self.data_queue.clear()
 
-    def send_data(self,):
-        while not self.freeze:
-            try:
-                self.receive_data()
-                Timer(1.0, self.receive_data).start()
-                if self.data_queue:
-                    prompt = f'You have [{len(self.data_queue)}] messages. Enter a message or enter "/r" to print new messages > '
-                else:
-                    prompt = 'Enter a message > '
-                message_input = input(prompt)
-                if len(message_input) > self.msg_max_symbols:
-                    self.io.output(f'║ The number of symbols of your message is more than {self.msg_max_symbols}, using first {self.msg_max_symbols} symbols')
-                    message_input = message_input[:self.msg_max_symbols]
-                if message_input != "/r":
-                    message = tuichat_utils.data_handler.Client.serialize_client_data(message_input, self.uuid, 'message')
-                    self.sock.sendall(bytes(message, encoding="utf-8"))
-                else:
-                    self.print_data()
-            except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError):
-                self.handle_server_closed()
-
-    def start_client(self,):
-        try:
-            self.send_data()
-        except (KeyboardInterrupt, SystemExit):
-            self.disconnect()
-        except Exception as ex:
-            self.io.output(ex, 'error')
-            self.disconnect()
-
-    def handle_server_closed(self,):
-        self.io.output("\n║ Server closed!")
+    def handle_server_closed(self):
+        self.IO.output("\n║ Server closed!")
         self.freeze = True
-        connect_again = self.io.connect_input('reconnect')
+        connect_again = self.IO.connect_input('reconnect')
         if connect_again:
             respond = self.reconnect()
             if respond is True:
-                self.io.output("║ Connection established!\n")
+                self.IO.output("║ Connection established!\n")
                 self.freeze = False
                 self.start_client()
             else:
-                self.io.output("\n║ Server did not respond!")
-                self.io.exit()
+                self.IO.output("\n║ Server did not respond!")
+                self.IO.exit()
         else:
             exit()
 
-    def reconnect(self,):
+    def reconnect(self):
         i = 0
         pbar = tqdm(total=5)
         while i <= 5:
             try:
-                self.sock.close()
-                self.sock = socket()
-                self.sock.connect((self.host, self.port))
+                self.connect(self.host, self.port)
             except Exception as ex:
-                self.io.output(ex, 'error')
+                self.IO.output(ex, 'error')
                 sleep(1)
                 i += 1
                 pbar.update(1)
                 continue
             else:
-                self.setup_connection()
                 pbar.close()
                 return True
         else:
             pbar.close()
             return False
 
-    def receive_uuid(self,):
-        uuid_bytes = self.sock.recv(16)
-        self.uuid = str(UUID(bytes=uuid_bytes))
-
-    def receive_key(self,):
-        pub = self.sock.recv(172).decode('utf-8')
-        self.server_pub = pub
-
-    def send_key(self,):
-        self.sock.send(bytes(str(self.pubkey), encoding='utf-8'))
-
-    def setup_connection(self,):
-        self.sock.setblocking(0)
-        self.sock.settimeout(5)
-        self.receive_uuid()
-        self.receive_key()
-        self.send_key()
-        self.sock.settimeout(self.msg_timeout)
-
-    def connect(self, success_connect=False, host=None, port=None):
-        self.sock = socket()
-
-        while not success_connect:
-            try:
-                if self.mode == 'cli':
-                    self.host = self.io.connect_input('host')
-                    self.port = self.io.connect_input('port')
-                else:
-                    self.host = host
-                    self.port = port
-                self.sock.connect((self.host, self.port))
-                self.setup_connection()
-            except KeyboardInterrupt:
-                exit()
-                break
-            except gaierror:
-                self.io.output("║ Host not found!\n", 'error')
-            except (ConnectionRefusedError, timeout, TimeoutError):
-                self.io.output("║ Host rejected connection request!\n", 'error')
-            except ValueError as ex:
-                self.io.output(f"║ ValueError: {ex}!\n", 'error')
-            else:
-                success_connect = True
-        return self.host, self.port
-
-    def disconnect(self,):
-        tuichat_utils.data_handler.Client.output(f'\nDisconnecting from {self.sock.getsockname()[0]} ...')
+    def disconnect(self):
+        self.IO.output(f'\nDisconnecting from {self.sock.getsockname()[0]} ...')
         try:
             self.freeze = True
             message = tuichat_utils.data_handler.Client.serialize_client_data('', self.uuid, 'disconnect')
             self.sock.sendall(bytes(message, encoding="utf-8"))
             self.sock.close()
         except Exception as ex:
-            self.io.output(ex, 'error')
+            self.IO.output(ex, 'error')
         else:
-            self.io.output('Successfully disconnected from server! [OK]')
-            answer = self.io.connect_input('disconnect')
+            self.IO.output('Successfully disconnected from server! [OK]')
+            answer = self.IO.connect_input('disconnect')
             if answer:
                 self.connect()
             else:
