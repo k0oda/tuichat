@@ -89,7 +89,7 @@ class Client:
             if self.SHOW_LICENSE:
                 self.IO.output(self.COPYRIGHT)
             if self.SHOW_CONNECTION_INFO:
-                connection_info_obj = tuichat_utils.ui.ConnectionInfo(host, port)
+                connection_info_obj = tuichat_utils.ui.ConnectionInfo(self.host, self.port)
                 connection_info = connection_info_obj.connection_info
                 self.IO.output(connection_info)
 
